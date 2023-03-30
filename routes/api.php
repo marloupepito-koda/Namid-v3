@@ -42,6 +42,7 @@ Route::get('/get_each_ticket_in_event_inventory/{id}', [EventInventoryController
 
 
 Route::get('/get_event_bags/{unitid}/{eventid}/{type}', [EventBagsController::class, 'get_event_bags']);
+Route::get('/get_returned_bag/{unitid}/{returned}', [EventBagsController::class, 'get_returned_bag']);
 
 
 Route::get('/get_tickets_in_bag/{unitid}/{eventid}/{bagid}', [TicketBagsController::class, 'get_tickets_in_bag']);

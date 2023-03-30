@@ -35,20 +35,16 @@
                         <td>
                             <a
                                 href="javascript:;"
-                                @click="
-                                    showTickets(i.id, i.seller_name, i.bag_name)
-                                "
+                                @click="showTickets(i.id, i.seller, i.bag_name)"
                                 >{{ i.bag_name }}</a
                             >
                         </td>
                         <td>
                             <a
                                 href="javascript:;"
-                                @click="
-                                    showTickets(i.id, i.seller_name, i.bag_name)
-                                "
-                                v-if="i.seller_name !== null"
-                                >{{ i.seller_name }}</a
+                                @click="showTickets(i.id, i.seller, i.bag_name)"
+                                v-if="i.seller !== null"
+                                >{{ i.seller }}</a
                             >
                             <v-chip
                                 size="small"
@@ -61,7 +57,7 @@
                         <td>{{ i.n_o_t }}</td>
                         <!-- <td>{{ i.n_o_s }}</td> -->
                         <td>{{ i.remaining_ticket }}</td>
-                        <td>{{ i.bag_date }}</td>
+                        <td>{{ i.date }}</td>
                         <td>
                             <a
                                 href="javascript:;"
@@ -84,6 +80,14 @@ export default {
     mounted() {
         this.mount();
     },
+    created() {
+        this.$watch(
+            () => this.$route.params,
+            (toParams, previousParams) => {
+                this.mount();
+            }
+        );
+    },
     methods: {
         logs(event) {
             axios
@@ -101,16 +105,11 @@ export default {
                     "/administrator/dashboard/" +
                     this.unitId +
                     "/" +
-                    this.unitName +
-                    "/" +
-                    this.eventName +
+                    this.eventId +
                     "/returned_bags/inside_bag/all_tickets",
-                query: {
-                    event_id: [this.eventId, String(id), sellerName, bagName],
-                },
             });
         },
-        returnTicket(id, bagName) {
+        returnTicket(id) {
             this.$swal({
                 title: "Are you sure?",
                 text: "You want to return this bag into Event!",
@@ -123,36 +122,21 @@ export default {
             }).then((result) => {
                 if (result.isConfirmed) {
                     axios
-                        .post("/return_bag", {
+                        .put("/return_bag", {
                             id: id,
                             status: null,
-                            not: "back",
+                            return: "back",
                         })
                         .then((res) => {
                             this.dialog = false;
-
-                            const name = localStorage.getItem("name");
-                            this.logs(
-                                name +
-                                    " Returned the " +
-                                    bagName +
-                                    " Event Bag Inventory."
-                            );
+                            this.$swal({
+                                icon: "success",
+                                title: "Bag has been returned!",
+                                showConfirmButton: false,
+                                timer: 1500,
+                            });
                             this.$router.push({
-                                path:
-                                    "/administrator/dashboard/" +
-                                    this.unitId +
-                                    "/" +
-                                    this.unitName.replace(/ /g, "_") +
-                                    "/" +
-                                    this.eventName.replace(/ /g, "_") +
-                                    "/loading",
-                                query: {
-                                    where: [
-                                        "returned_bags",
-                                        String(this.eventId),
-                                    ],
-                                },
+                                hash: "#" + Math.floor(Math.random() * 999999),
                             });
                         });
                 }
@@ -175,24 +159,10 @@ export default {
         },
         mount() {
             this.unitId = this.$route.path.split("/")[3];
-            this.eventId = this.$route.query.event_id;
-            this.unitName = this.$route.path.split("/")[4].replace(/_/g, " ");
-            this.eventName = this.$route.path.split("/")[5];
-            this.bagDestination = this.$route.path.split("/")[8];
-            this.bagId = this.$route.query.event_id[1];
-            this.sellerName = this.$route.query.event_id[2];
-            this.bagsss = this.$route.query.event_id[3];
+            this.eventId = this.$route.path.split("/")[4];
             axios
-                .get("/api/get_return_bag/" + [this.unitId, "Returned"])
+                .get("/api/get_returned_bag/" + this.unitId + "/" + "Returned")
                 .then((res) => {
-                    let urls = [
-                        "/api/get_return_bag/" + [this.unitId, "Returned"],
-                    ];
-                    caches.open("static_cache").then((cache) => {
-                        cache.addAll(urls).then(() => {
-                            console.log("Data cached ");
-                        });
-                    });
                     this.getData = res.data.status;
                     this.getData2 = res.data.status;
                     this.load = false;

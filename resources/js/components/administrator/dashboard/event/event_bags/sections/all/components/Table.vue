@@ -183,22 +183,11 @@ export default {
                 confirmButtonText: "Yes, return it!",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const name = localStorage.getItem("name");
-                    this.logs(
-                        name +
-                            " returned the " +
-                            bagName +
-                            " at the " +
-                            this.eventName.replace(/_/g, " ") +
-                            " Inventory"
-                    );
                     axios
-                        .post("/return_bag", {
+                        .put("/return_bag", {
                             id: id,
                             status: "Returned",
-                            spot: this.eventName.replace(/_/g, " "),
-                            not: "returnBackEventInventory",
-                            sellerName: sellerName,
+                            return: "Returned",
                         })
                         .then((res) => {
                             this.mount();

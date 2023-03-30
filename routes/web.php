@@ -56,6 +56,7 @@ Route::put('/edit_ticket_inventory', [EventInventoryController::class, 'edit_tic
 
 Route::post('/create_bag', [EventBagsController::class, 'create_bag']);
 Route::put('/edit_bag_info', [EventBagsController::class, 'edit_bag_info']);
+Route::put('/return_bag', [EventBagsController::class, 'return_bag']);
 
 Route::post('/add_ticket_in_bag', [TicketBagsController::class, 'add_ticket_in_bag']);
 
