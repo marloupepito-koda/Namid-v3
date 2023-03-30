@@ -194,20 +194,20 @@ const routes = [
                         component: TicketsInsideBag,
                         children: [
                             {
-                                path: "/administrator/dashboard/:id/:id/event_bags/inside_bag/all_tickets",
+                                path: "/administrator/dashboard/:id/:id/event_bags/inside_bag/all_tickets/:id",
                                 component: TicketsInsideBagAll,
                             },
 
                             {
-                                path: "/administrator/dashboard/:id/:id/event_bags/inside_bag/sold_tickets",
+                                path: "/administrator/dashboard/:id/:id/event_bags/inside_bag/sold_tickets/:id",
                                 component: TicketsInsideBagSold,
                             },
                             {
-                                path: "/administrator/dashboard/:id/:id/event_bags/inside_bag/unsold_tickets",
+                                path: "/administrator/dashboard/:id/:id/event_bags/inside_bag/unsold_tickets/:id",
                                 component: TicketsInsideBagUnsold,
                             },
                             {
-                                path: "/administrator/dashboard/:id/:id/event_bags/inside_bag/loading",
+                                path: "/administrator/dashboard/:id/:id/event_bags/inside_bag/loading/:id",
                                 component: InsideLoading,
                             },
                         ],

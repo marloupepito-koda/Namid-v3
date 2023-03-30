@@ -6,6 +6,9 @@ use App\Http\Controllers\UnitsController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\UnitInventoryController;
 use App\Http\Controllers\EventInventoryController;
+use App\Http\Controllers\EventBagsController;
+use App\Http\Controllers\TicketBagsController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -35,3 +38,12 @@ Route::get('/get_each_ticket_in_unit/{ticketid}', [UnitInventoryController::clas
 
 
 Route::get('/get_ticket_inventory/{unitid}/{eventid}', [EventInventoryController::class, 'get_ticket_inventory']);
+Route::get('/get_each_ticket_in_event_inventory/{id}', [EventInventoryController::class, 'get_each_ticket_in_event_inventory']);
+
+
+Route::get('/get_event_bags/{unitid}/{eventid}/{type}', [EventBagsController::class, 'get_event_bags']);
+
+
+Route::get('/get_tickets_in_bag/{unitid}/{eventid}/{bagid}', [TicketBagsController::class, 'get_tickets_in_bag']);
+
+

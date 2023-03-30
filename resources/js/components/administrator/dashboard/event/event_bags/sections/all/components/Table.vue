@@ -34,22 +34,19 @@
                 <tbody>
                     <tr v-for="i in getData" :key="i.name">
                         <td>
-                            <a
+                            <v-btn
+                                variant="text"
                                 href="javascript:;"
-                                @click="
-                                    showTickets(i.id, i.seller_name, i.bag_name)
-                                "
-                                >{{ i.bag_name }}</a
+                                @click="showTickets(i.id, i.seller)"
+                                ><u>{{ i.bag_name }}</u></v-btn
                             >
                         </td>
                         <td>
                             <a
                                 href="javascript:;"
-                                @click="
-                                    showTickets(i.id, i.seller_name, i.bag_name)
-                                "
-                                v-if="i.seller_name !== null"
-                                >{{ i.seller_name }}</a
+                                @click="showTickets(i.id, i.seller)"
+                                v-if="i.seller !== null"
+                                >{{ i.seller }}</a
                             >
                             <v-chip
                                 size="small"
@@ -71,22 +68,22 @@
                         </td>
                         <td>
                             {{
-                                i.remaining_ticket === null
+                                i.remaining === null
                                     ? 0
-                                    : i.remaining_ticket.replace(
+                                    : i.remaining.replace(
                                           /(\d)(?=(\d\d\d)+(?!\d))/g,
                                           "$1,"
                                       )
                             }}
                         </td>
 
-                        <td>{{ i.bag_date }}</td>
+                        <td>{{ i.date }}</td>
                         <td class="text-center">
                             <v-chip
                                 size="small"
                                 v-if="
-                                    i.remaining_ticket === null ||
-                                    i.remaining_ticket === '0' ||
+                                    i.remaining === null ||
+                                    i.remaining === '0' ||
                                     i.n_o_r === null ||
                                     i.n_o_r === 0
                                 "
@@ -112,9 +109,7 @@
                                 variant="outlined"
                                 large
                                 color="blue"
-                                @click="
-                                    returnBag(i.id, i.seller_name, i.bag_name)
-                                "
+                                @click="returnBag(i.id, i.seller, i.bag_name)"
                             >
                                 <v-icon size="large" color="blue">
                                     mdi-arrow-down-left-bold</v-icon
@@ -122,12 +117,7 @@
                             </v-btn>
                         </td>
                         <td class="text-center">
-                            <EditModal
-                                :editId="i.id"
-                                :editSellerName="i.seller_name"
-                                :editBagName="i.bag_name"
-                                :editLocation="i.location"
-                            />
+                            <EditModal :datas="i" />
                         </td>
                     </tr>
                 </tbody>
@@ -159,11 +149,17 @@ export default {
         eventName: "",
         tickets: [],
         ticketList: [],
-        currentPage: 1,
-        currentPerPage: 20,
         date: "",
         bags: [],
     }),
+    created() {
+        this.$watch(
+            () => this.$route.params,
+            (toParams, previousParams) => {
+                this.mount();
+            }
+        );
+    },
     methods: {
         logs(event) {
             axios
@@ -216,83 +212,32 @@ export default {
                 }
             });
         },
-        showTickets(id, sellerName, bagName) {
+        showTickets(id, seller) {
             this.$router.push({
                 path:
                     "/administrator/dashboard/" +
                     this.unitId +
                     "/" +
-                    this.unitName +
-                    "/" +
-                    this.eventName +
-                    "/event_bags/inside_bag/all_tickets",
-                query: {
-                    event_id: [this.eventId, String(id), sellerName, bagName],
-                },
+                    this.eventId +
+                    "/event_bags/inside_bag/all_tickets/" +
+                    String(id),
             });
         },
         mount() {
-            const countingPage = this.currentPage * this.currentPerPage;
-
-            this.date =
-                this.$route.query.searchDate === undefined
-                    ? "undefined"
-                    : moment(new Date(this.$route.query.searchDate)).format(
-                          "MM-DD-YY"
-                      );
             this.unitId = this.$route.path.split("/")[3];
-            this.unitName = this.$route.path.split("/")[4];
-            this.eventName = this.$route.path.split("/")[5];
-            this.eventId = this.$route.query.event_id;
+            this.eventId = this.$route.path.split("/")[4];
 
             axios
                 .get(
-                    "/api/get_event_inventory_bags/" +
-                        [
-                            countingPage,
-                            this.date,
-                            this.unitId,
-                            this.eventId,
-                            "All",
-                        ]
+                    "/api/get_event_bags/" +
+                        this.unitId +
+                        "/" +
+                        this.eventId +
+                        "/all"
                 )
                 .then((res) => {
-                    let urls = [
-                        "/api/get_event_inventory_bags/" +
-                            [
-                                countingPage,
-                                this.date,
-                                this.unitId,
-                                this.eventId,
-                                "All",
-                            ],
-                        "/api/get_event_inventory_bags/" +
-                            [
-                                countingPage,
-                                this.date,
-                                this.unitId,
-                                this.eventId,
-                                "Active",
-                            ],
-                        "/api/get_event_inventory_bags/" +
-                            [
-                                countingPage,
-                                this.date,
-                                this.unitId,
-                                this.eventId,
-                                "Not Active",
-                            ],
-                    ];
-                    caches.open("static_cache").then((cache) => {
-                        cache.addAll(urls).then(() => {
-                            console.log("Data cached ");
-                        });
-                    });
-
-                    this.getData = res.data.status.data;
-                    this.getData2 = res.data.status.data;
-
-                    this.bags = res.data.status.data.map((zzz) => zzz.bag_name);
+                    this.getData = res.data.status;
+                    this.getData2 = res.data.status;
                     this.load = false;
                 });
         },

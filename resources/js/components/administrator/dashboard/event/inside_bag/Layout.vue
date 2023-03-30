@@ -27,12 +27,13 @@ export default {
     mounted() {
         this.tab = this.$route.path.split("/")[7];
         this.unitId = this.$route.path.split("/")[3];
-        this.unitName = this.$route.path.split("/")[4];
-        this.eventName = this.$route.path.split("/")[5];
-        this.eventId = this.$route.query.event_id[0];
-        this.bagId = this.$route.query.event_id[1];
-        this.sellerName = this.$route.query.event_id[2];
-        this.bagName = this.$route.query.event_id[3];
+        this.eventId = this.$route.path.split("/")[4];
+
+        // this.unitName = this.$route.path.split("/")[4];
+        // this.eventName = this.$route.path.split("/")[5];
+        // this.bagId = this.$route.query.event_id[1];
+        // this.sellerName = this.$route.query.event_id[2];
+        // this.bagName = this.$route.query.event_id[3];
     },
     methods: {
         goToOffline() {
@@ -41,18 +42,16 @@ export default {
                     "/administrator/dashboard/" +
                     this.unitId +
                     "/" +
-                    this.unitName +
-                    "/" +
-                    this.eventName +
+                    this.eventId +
                     "/event_bags/inside_bag/all_tickets/offline",
-                query: {
-                    event_id: [
-                        this.eventId,
-                        this.bagId,
-                        this.sellerName,
-                        this.bagName,
-                    ],
-                },
+                // query: {
+                //     event_id: [
+                //         this.eventId,
+                //         this.bagId,
+                //         this.sellerName,
+                //         this.bagName,
+                //     ],
+                // },
             });
         },
         goToOffline2() {
@@ -61,18 +60,16 @@ export default {
                     "/administrator/dashboard/" +
                     this.unitId +
                     "/" +
-                    this.unitName +
-                    "/" +
-                    this.eventName +
+                    this.eventId +
                     "/event_bags/inside_bag/all_tickets/offline2",
-                query: {
-                    event_id: [
-                        this.eventId,
-                        this.bagId,
-                        this.sellerName,
-                        this.bagName,
-                    ],
-                },
+                // query: {
+                //     event_id: [
+                //         this.eventId,
+                //         this.bagId,
+                //         this.sellerName,
+                //         this.bagName,
+                //     ],
+                // },
             });
         },
     },

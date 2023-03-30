@@ -68,26 +68,27 @@ export default {
             const { valid } = await this.$refs.form.validate();
             const date = moment(this.date).format("LLLL");
 
-            const date2 = moment(this.$route.query.searchDate).format("LLL");
             if (valid) {
                 this.loading = true;
                 axios
-                    .post("/add_bag_inventory", {
-                        foreign_unit: this.unitId,
-                        foreign_spot: this.eventId,
-                        bagName: this.bagName,
+                    .post("/create_bag", {
+                        unitid: this.unitId,
+                        eventid: this.eventId,
+                        bag_name: this.bagName,
                         date: date,
                     })
                     .then((res) => {
                         this.loading = false;
                         if (res.data.status === "success") {
-                            const name = localStorage.getItem("name");
-                            const bagPath = this.$route.path.split("/")[7];
+                            this.dialog = false;
                             this.$swal({
                                 icon: "success",
                                 title: "Bag Added",
                                 showConfirmButton: false,
                                 timer: 1000,
+                            });
+                            this.$router.push({
+                                hash: "#" + Math.floor(Math.random() * 999999),
                             });
                         } else {
                             this.dialog = false;

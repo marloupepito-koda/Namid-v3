@@ -7,6 +7,8 @@ use App\Http\Controllers\UnitsController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\UnitInventoryController;
 use App\Http\Controllers\EventInventoryController;
+use App\Http\Controllers\EventBagsController;
+use App\Http\Controllers\TicketBagsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -50,4 +52,11 @@ Route::post('/create_unit_ticket_inventory', [UnitInventoryController::class, 'c
 
 Route::post('/add_ticket_in_event', [EventInventoryController::class, 'add_ticket_in_event']);
 Route::put('/edit_ticket_inventory', [EventInventoryController::class, 'edit_ticket_inventory']);
+
+
+Route::post('/create_bag', [EventBagsController::class, 'create_bag']);
+Route::put('/edit_bag_info', [EventBagsController::class, 'edit_bag_info']);
+
+Route::post('/add_ticket_in_bag', [TicketBagsController::class, 'add_ticket_in_bag']);
+
 

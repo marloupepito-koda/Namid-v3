@@ -33,11 +33,9 @@
 import moment from "moment";
 export default {
     mounted() {
-        this.tab = this.$route.path.split("/")[7];
+        this.tab = this.$route.path.split("/")[6];
         this.unitId = this.$route.path.split("/")[3];
-        this.unitName = this.$route.path.split("/")[4];
-        this.eventName = this.$route.path.split("/")[5];
-        this.eventId = this.$route.query.event_id;
+        this.eventId = this.$route.path.split("/")[4];
     },
     data: () => ({
         tab: null,
@@ -45,19 +43,14 @@ export default {
     }),
     methods: {
         nextTab(e) {
-            const subDate = moment().format("LLL");
-
             this.$router.push({
                 path:
                     "/administrator/dashboard/" +
                     this.unitId +
                     "/" +
-                    this.unitName +
-                    "/" +
-                    this.eventName +
+                    this.eventId +
                     "/event_bags/" +
                     e,
-                query: { event_id: this.eventId },
             });
         },
     },

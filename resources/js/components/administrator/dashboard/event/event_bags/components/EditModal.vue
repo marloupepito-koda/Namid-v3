@@ -20,8 +20,8 @@
                     </v-card-title>
                     <v-form ref="form" v-model="valid" lazy-validation>
                         <v-text-field
-                            v-model="sellerName"
-                            :rules="sellerNameRules"
+                            v-model="seller"
+                            :rules="sellerRules"
                             label="Seller Name"
                             required
                             variant="outlined"
@@ -29,8 +29,8 @@
                         ></v-text-field>
 
                         <v-text-field
-                            v-model="bagName"
-                            :rules="bagNameRules"
+                            v-model="bag_name"
+                            :rules="bag_nameRules"
                             label="Bag Name"
                             required
                             variant="outlined"
@@ -72,130 +72,68 @@ import Datepicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import moment from "moment";
 export default {
-    props: ["editId", "editSellerName", "editLocation", "editBagName"],
+    props: ["datas"],
     components: { Datepicker },
     data: () => ({
         loading: false,
-        items: [],
+        dialog: false,
         unitId: "",
         eventId: "",
-        dialog: false,
         valid: true,
-        unitName: "",
-        eventName: "",
-        sellerName: "",
-        sellerNameRules: [(v) => !!v || "Seller Name is required"],
-        sellerName1: "",
-        bagName: "",
-        bagNameRules: [(v) => !!v || "Bag Name is required"],
+        seller: "",
+        sellerRules: [(v) => !!v || "Seller Name is required"],
+        seller1: "",
+        bag_name: "",
+        bag_nameRules: [(v) => !!v || "Bag Name is required"],
         location: "",
         locationRules: [(v) => !!v || "Location is required"],
-        bagDestination: "",
-        date: "",
-        bagGlobalId: "",
     }),
     mounted() {
         this.unitId = this.$route.path.split("/")[3];
-        this.eventId = this.$route.query.event_id;
-        this.unitName = this.$route.path.split("/")[4].replace(/_/g, " ");
-        this.eventName = this.$route.path.split("/")[5];
-        this.bagDestination = this.$route.path.split("/")[7];
+        this.eventId = this.$route.path.split("/")[4];
         this.mount();
     },
     methods: {
         openModal() {
             this.dialog = true;
-            this.sellerName = this.editSellerName;
-            this.bagGlobalId = this.editBagId;
-            this.location = this.editLocation;
-            this.bagName = this.editBagName;
+            this.seller = this.datas.seller;
+            this.bag_name = this.datas.bag_name;
+            this.location = this.datas.location;
         },
-        mount() {
-            this.date =
-                this.$route.query.searchDate === undefined
-                    ? moment(new Date()).format("LLL")
-                    : moment(new Date(this.$route.query.searchDate)).format(
-                          "LLL"
-                      );
-        },
-        logs(event) {
-            axios
-                .post("/add_logs", {
-                    unit_id: this.unitId,
-                    event_id: this.eventId,
-                    ticket_id: this.globalTicketId,
-                    descriptions: event,
-                })
-                .then((res) => {});
-        },
+        mount() {},
+
         async validate() {
             const { valid } = await this.$refs.form.validate();
-            const date = moment(this.date).format("LLLL");
-            const time = moment().format("LTS");
+            // const date = moment(this.date).format("LLLL");
+            // const time = moment().format("LTS");
             if (valid) {
-                this.loading = true;
                 axios
-                    .post("/edit_seller_info", {
-                        unitid: this.unitId,
-                        eventid: this.eventId,
-                        id: this.editId,
-                        bagGlobalId: this.bagGlobalId,
-                        editSellerName: this.sellerName,
-                        editSellerName1: this.sellerName1,
-                        editBagName: this.bagName,
-                        editLocation: this.location,
-                        date: moment(new Date()).format("LLLL"),
+                    .put("/edit_bag_info", {
+                        id: this.datas.id,
+                        seller: this.seller,
+                        bag_name: this.bag_name,
+                        location: this.location,
                     })
-                    .then((result) => {
+                    .then((res) => {
                         this.dialog = false;
-                        this.loading = false;
-                        if (result.data.status === "success") {
-                            const name = localStorage.getItem("name");
-                            this.logs(
-                                name +
-                                    " Assigned " +
-                                    this.sellerName +
-                                    " carry the " +
-                                    this.bagName +
-                                    " at the" +
-                                    this.location
-                            );
-
-                            this.$swal({
-                                icon: "success",
-                                title: "Seller Saved!",
-                                showConfirmButton: false,
-                                timer: 1000,
-                            });
-                            this.$router.push({
-                                path:
-                                    "/administrator/dashboard/" +
-                                    this.unitId +
-                                    "/" +
-                                    this.unitName.replace(/ /g, "_") +
-                                    "/" +
-                                    this.eventName.replace(/ /g, "_") +
-                                    "/loading",
-                                query: {
-                                    where: [
-                                        "event_bags/" + this.bagDestination,
-                                        String(this.eventId),
-                                    ],
-                                },
-                            });
-                        } else {
-                            this.loading = false;
-                            this.$swal({
-                                icon: "error",
-                                title: "Seller name is exist!",
-                                showConfirmButton: false,
-                                timer: 1000,
-                            });
-                        }
+                        this.$swal({
+                            icon: "success",
+                            title: "Updated!",
+                            showConfirmButton: false,
+                            timer: 1000,
+                        });
+                        this.$router.push({
+                            hash: "#" + Math.floor(Math.random() * 999999),
+                        });
                     })
                     .catch((err) => {
-                        this.loading = false;
-                        this.disabled = false;
+                        this.dialog = false;
+                        this.$swal({
+                            icon: "error",
+                            title: "error",
+                            showConfirmButton: false,
+                            timer: 1000,
+                        });
                     });
             }
         },

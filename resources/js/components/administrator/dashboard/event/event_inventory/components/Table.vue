@@ -109,7 +109,14 @@ export default {
         tickets: [],
         ticketList: [],
     }),
-
+    created() {
+        this.$watch(
+            () => this.$route.params,
+            (toParams, previousParams) => {
+                this.mount();
+            }
+        );
+    },
     methods: {
         showBags(id, start, end) {
             this.$router.push({

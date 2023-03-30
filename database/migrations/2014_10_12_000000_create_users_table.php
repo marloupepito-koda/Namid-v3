@@ -14,13 +14,18 @@ return new class extends Migration
     public function up()
     {
 
+      
         Schema::create('event_bags', function (Blueprint $table) {
             $table->id();
+            $table->string('unitid')->nullable();
+            $table->string('eventid')->nullable();
             $table->string('bag_name')->nullable();
             $table->string('seller')->nullable();
             $table->string('location')->nullable();
             $table->string('remaining')->nullable();
             $table->string('status')->nullable();
+            $table->string('returned')->nullable();
+            $table->string('date')->nullable();
             $table->timestamps();
         });
 

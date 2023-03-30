@@ -7,12 +7,12 @@ use App\Models\UnitInventory;
 class UnitInventoryController extends Controller
 {
     
+   
     public function get_each_ticket_in_unit($ticketid){
         $tickets= UnitInventory::where('unitid',$ticketid)->first();
          return response()->json([
         'status' => $tickets
         ]);
-        
     }
 public function get_unit_inventory($unitid,$eventid){
         $tickets= UnitInventory::where([['unitid','=',$unitid],['unitid','=',$eventid]])->get();

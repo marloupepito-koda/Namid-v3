@@ -7,6 +7,12 @@ use App\Models\EventInventory;
 use App\Models\UnitInventory;
 class EventInventoryController extends Controller
 {
+     public function get_each_ticket_in_event_inventory($id){
+        $tickets= EventInventory::where('id',$id)->first();
+         return response()->json([
+        'status' => $tickets
+        ]);
+    }
       public function edit_ticket_inventory(Request $request){
           EventInventory::where('id',$request->id)
             ->update(
