@@ -7,11 +7,7 @@
             large
             color="black"
             @click="openModal"
-            :disabled="
-                sellerName === null || sellerName === undefined
-                    ? true
-                    : soldDate
-            "
+            :disabled="datas.status === 'Sold' ? true : false"
         >
             <v-icon large color="black"> mdi-account-cash-outline</v-icon>
         </v-btn>
@@ -21,22 +17,15 @@
                     <v-card-title>
                         <span class="text-h5">SOLD TICKETS</span><br />
                     </v-card-title>
-                    <span>SOLD: {{ parseInt(e) - parseInt(d) + 1 }}</span
-                    ><br />
                     <v-form ref="form" v-model="valid" lazy-validation>
                         <div class="row">
                             <div class="col-md-12 mb-5">
-                                <Datepicker
-                                    v-model="date2"
-                                    model-type="MM-dd-yyyy"
-                                    placeholder="Select Date"
-                                    input-class-name="dp-custom-input"
-                                />
+                                {{ datas.ticket_type }}
                             </div>
                             <div class="col-md-6">
                                 <v-text-field
                                     disabled
-                                    v-model="d"
+                                    v-model="start"
                                     :rules="startRules"
                                     label="Starting #"
                                     required
@@ -46,7 +35,7 @@
                             </div>
                             <div class="col-md-6">
                                 <v-text-field
-                                    v-model="e"
+                                    v-model="end"
                                     :rules="endRules"
                                     label="Ending #"
                                     required
@@ -67,13 +56,7 @@
                                 @click="validate"
                                 :loading="loading"
                                 :disabled="
-                                    parseInt(limit) <
-                                        parseInt(e) - parseInt(d) + 1 ||
-                                    parseInt(e) < parseInt(d)
-                                        ? true
-                                        : parseInt(limit) <
-                                              parseInt(e) - parseInt(d) + 1 ||
-                                          parseInt(e) < parseInt(d)
+                                    parseInt(endDefault) < parseInt(end)
                                         ? true
                                         : false
                                 "
@@ -93,203 +76,54 @@ import Datepicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import moment from "moment";
 export default {
-    props: ["editId", "soldDate"],
+    props: ["datas"],
     components: { Datepicker },
     data: () => ({
         unitId: "",
         loading: false,
         eventId: "",
         date: moment().format("LLL"),
-        dialog: false,
-        valid: true,
-        unitName: "",
-        eventName: "",
         start: "",
-        startRules: [(v) => !!v || "Starting # is required"],
         end: "",
-        endRules: [(v) => !!v || "Ending # is required"],
-        bagDestination: "",
-        bagId: "",
-        a: "",
-        b: "",
-        c: "",
-        d: "",
-        e: "",
-        f: "",
-        g: "",
-        global_ticket_id: "",
-        ticketId: "",
-        ticketPricez: "",
-        ticketends: "",
-        soldDisable: "",
-        date2: moment().format("LLL"),
-        sellerName: "",
-        limit: "",
+        dialog: false,
+        id: "",
+        endDefault: "",
     }),
     mounted() {
         this.unitId = this.$route.path.split("/")[3];
-        this.eventId = this.$route.query.event_id[0];
-        this.unitName = this.$route.path.split("/")[4].replace(/_/g, " ");
-        this.eventName = this.$route.path.split("/")[5];
-        this.bagDestination = this.$route.path.split("/")[7];
-        this.bagId = this.$route.query.event_id[1];
-        this.sellerName = this.$route.query.event_id[2];
+        this.eventId = this.$route.path.split("/")[4];
     },
     methods: {
         openModal() {
             this.dialog = true;
-            this.start = this.bag;
-            this.a = this.editId[0];
-            this.global_ticket_id = this.editId[10];
-            this.b = this.editId[1];
-            this.c = this.editId[2];
-            this.d = this.editId[9];
-            this.e = this.editId[4];
-            this.ticketId = this.editId[6];
-            this.ticketPricez = this.editId[5];
-            this.ticketends = this.editId[4];
-            this.soldDisable = this.editId[7] === "Sold Out" ? true : false;
-            const d = new Date(this.date);
-            this.g = moment(d).format("LLL");
-            this.limit = this.editId[4] - this.editId[9] + 1;
+            this.start = this.datas.start;
+            this.end = this.datas.end;
+            this.endDefault = this.datas.end;
+            this.id = this.datas.id;
         },
-        logs(event) {
-            axios
-                .post("/add_logs", {
-                    unit_id: this.unitId,
-                    event_id: this.eventId,
-                    ticket_id: this.globalTicketId,
-                    descriptions: event,
-                })
-                .then((res) => {});
-        },
-        async validate() {
-            const name = localStorage.getItem("name");
-            const { valid } = await this.$refs.form.validate();
-            const d = new Date(this.date2);
-            const date = moment(d).format("LLL");
-            const datesss =
-                new Date().getMonth() +
-                1 +
-                "-" +
-                new Date().getDate() +
-                "-" +
-                new Date().getFullYear();
-            const global_ticket_id = this.global_ticket_id;
-            const insidePath = this.$route.path.split("/")[8];
 
+        async validate() {
+            const { valid } = await this.$refs.form.validate();
             const data = {
-                bag_id: this.a,
-                unit_id: this.unitId,
-                spot_id: this.eventId,
-                global_ticket_id: global_ticket_id,
-                inventory_bags_id: this.ee_bag_id,
-                ticket_name: this.b,
-                bagname: this.c,
-                ticket_price: this.ticketPricez,
-                ticket_start: this.d,
-                ticket_end: parseInt(this.e),
-                ticket_date_sold: this.date2,
-                remaining: this.ticketends - this.d + 1 - (this.e - this.d + 1),
-                amount: this.ticketPricez * (this.e - this.d + 1),
-                status:
-                    this.ticketends - this.d + 1 - (this.e - this.d + 1) === 0
-                        ? "soldout"
-                        : "keepit",
-                sellerName: this.sellerName,
+                id: this.id,
+                start: this.start,
+                end: this.end,
+                date: moment().format("LLL"),
             };
             if (valid) {
-                this.loading = true;
-
-                const form =
-                    JSON.parse(
-                        localStorage.getItem(
-                            "add_ticket_sold" +
-                                this.unitId +
-                                this.eventId +
-                                this.bagId
-                        )
-                    ) === null
-                        ? []
-                        : JSON.parse(
-                              localStorage.getItem(
-                                  "add_ticket_sold" +
-                                      this.unitId +
-                                      this.eventId +
-                                      this.bagId
-                              )
-                          );
-
-                if (localStorage.getItem("internet") !== "online") {
-                    form.push(data);
-                    localStorage.setItem(
-                        "add_ticket_sold" +
-                            this.unitId +
-                            this.eventId +
-                            this.bagId,
-                        JSON.stringify(form)
-                    );
-
+                axios.post("/create_ticket_sold", data).then((res) => {
                     this.dialog = false;
-                    this.loading = false;
+                    this.$router.push({
+                        path: this.$route.path,
+                        hash: "#" + Math.floor(Math.random() * 999999),
+                    });
                     this.$swal({
                         icon: "success",
                         title: "Added Ticket Sold",
                         showConfirmButton: false,
                         timer: 1000,
                     });
-                } else {
-                    axios.post("/add_ticket_sold", data).then((res) => {
-                        this.loading = false;
-                        this.dialog = false;
-                        if (res.data.status === "error") {
-                            this.$swal({
-                                icon: "error",
-                                title: "The ending of the ticket is exceed!",
-                                showConfirmButton: false,
-                                timer: 1500,
-                            });
-                        } else {
-                            this.$swal({
-                                icon: "success",
-                                title: "Tickets Sold!",
-                                showConfirmButton: false,
-                                timer: 1500,
-                            });
-                            this.logs(
-                                name +
-                                    " marked as sold " +
-                                    this.b +
-                                    " in " +
-                                    this.c +
-                                    " with starting # of " +
-                                    this.d +
-                                    " to " +
-                                    this.e +
-                                    " the amount of" +
-                                    this.ticketPricez * (this.e - this.d + 1)
-                            );
-                            this.$router.push({
-                                path:
-                                    "/administrator/dashboard/" +
-                                    this.unitId +
-                                    "/" +
-                                    this.unitName.replace(/ /g, "_") +
-                                    "/" +
-                                    this.eventName.replace(/ /g, "_") +
-                                    "/event_bags/inside_bag/loading",
-                                query: {
-                                    where: [
-                                        this.eventId,
-                                        String(this.bagId),
-                                        this.sellerName,
-                                        insidePath,
-                                    ],
-                                },
-                            });
-                        }
-                    });
-                }
+                });
             }
         },
         reset() {

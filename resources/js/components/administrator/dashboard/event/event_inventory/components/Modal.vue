@@ -209,60 +209,28 @@ export default {
                 date: moment().format("LLL"),
             };
 
-            if (localStorage.getItem("internet") !== "online") {
-                const form =
-                    JSON.parse(
-                        localStorage.getItem(
-                            "add_ticket_in_event" + this.unitId + this.eventId
-                        )
-                    ) === null
-                        ? []
-                        : JSON.parse(
-                              localStorage.getItem(
-                                  "add_ticket_in_event" +
-                                      this.unitId +
-                                      this.eventId
-                              )
-                          );
-
-                form.push(data);
-                localStorage.setItem(
-                    "add_ticket_in_event" + this.unitId + this.eventId,
-                    JSON.stringify(form)
-                );
-
-                this.dialog = false;
-                this.loading = false;
-                this.$swal({
-                    icon: "success",
-                    title: "Ticket Added",
-                    showConfirmButton: false,
-                    timer: 1000,
-                });
-            } else {
-                if (valid) {
-                    this.loading = true;
-                    axios
-                        .post("/add_ticket_in_event", data)
-                        .then((res) => {
-                            this.$router.push({
-                                hash: "#" + Math.floor(Math.random() * 999999),
-                            });
-                            this.mount();
-                            this.dialog = false;
-                            this.loading = false;
-                            this.$swal({
-                                icon: "success",
-                                title: "Ticket Added",
-                                showConfirmButton: false,
-                                timer: 1000,
-                            });
-                        })
-                        .catch((err) => {
-                            this.loading = false;
-                            console.log(err);
+            if (valid) {
+                this.loading = true;
+                axios
+                    .post("/add_ticket_in_event", data)
+                    .then((res) => {
+                        this.$router.push({
+                            hash: "#" + Math.floor(Math.random() * 999999),
                         });
-                }
+                        this.mount();
+                        this.dialog = false;
+                        this.loading = false;
+                        this.$swal({
+                            icon: "success",
+                            title: "Ticket Added",
+                            showConfirmButton: false,
+                            timer: 1000,
+                        });
+                    })
+                    .catch((err) => {
+                        this.loading = false;
+                        console.log(err);
+                    });
             }
         },
         reset() {

@@ -124,9 +124,7 @@ export default {
                     "/administrator/dashboard/" +
                     this.unitId +
                     "/" +
-                    this.unitName.replace(/ /g, "_") +
-                    "/" +
-                    this.eventName.replace(/ /g, "_") +
+                    this.eventId.replace(/ /g, "_") +
                     "/show_bags",
                 query: {
                     event_id: String(this.eventId),
@@ -178,13 +176,7 @@ export default {
                 .then((res) => {
                     this.getData = Object.values(res.data.status);
                     this.getData2 = Object.values(res.data.status);
-
                     this.load = false;
-                    // this.search =
-                    //     this.$route.query.event_id[1] === undefined
-                    //         ? ""
-                    //         : this.$route.query.event_id[1];
-                    // this.searchData("insertText");
                 });
         },
         searchData(e) {

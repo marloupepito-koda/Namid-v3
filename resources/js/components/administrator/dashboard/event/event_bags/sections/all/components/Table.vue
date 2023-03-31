@@ -6,6 +6,7 @@
                 color="black"
             ></v-progress-circular>
         </center>
+
         <v-card v-else>
             <v-card-title>
                 <v-text-field
@@ -18,6 +19,11 @@
                     @input="searchData"
                 ></v-text-field>
             </v-card-title>
+            <v-skeleton-loader
+                class="mx-auto"
+                max-width="300"
+                type="card"
+            ></v-skeleton-loader>
             <v-table density="compact">
                 <thead>
                     <tr>
@@ -82,10 +88,7 @@
                             <v-chip
                                 size="small"
                                 v-if="
-                                    i.remaining === null ||
-                                    i.remaining === '0' ||
-                                    i.n_o_r === null ||
-                                    i.n_o_r === 0
+                                    i.remaining === null || i.remaining === '0'
                                 "
                                 color="red"
                                 text-color="white"
@@ -128,14 +131,12 @@
 
 <script>
 import moment from "moment";
-import Modal from "./Modal.vue";
 import EditModal from "./../../../components/EditModal.vue";
 export default {
     mounted() {
         this.mount();
     },
     components: {
-        Modal,
         EditModal,
     },
     data: () => ({
@@ -145,12 +146,7 @@ export default {
         search: [],
         unitId: "",
         eventId: "",
-        unitName: "",
-        eventName: "",
-        tickets: [],
-        ticketList: [],
         date: "",
-        bags: [],
     }),
     created() {
         this.$watch(
@@ -161,17 +157,7 @@ export default {
         );
     },
     methods: {
-        logs(event) {
-            axios
-                .post("/add_logs", {
-                    unit_id: this.unitId,
-                    event_id: this.eventId,
-                    ticket_id: "",
-                    descriptions: event,
-                })
-                .then((res) => {});
-        },
-        returnBag(id, sellerName, bagName) {
+        returnBag(id) {
             this.$swal({
                 title: "Are you sure?",
                 text: "You wanna return this bag in Event?",
@@ -201,7 +187,7 @@ export default {
                 }
             });
         },
-        showTickets(id, seller) {
+        showTickets(id) {
             this.$router.push({
                 path:
                     "/administrator/dashboard/" +

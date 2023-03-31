@@ -5,14 +5,10 @@
             block
             variant="outlined"
             color="black"
+            :loading="loading"
             @click="openModal"
-            :disabled="soldDate"
+            :disabled="datas.status === 'Sold' ? true : false"
         >
-            <!-- :disabled="
-                sellerName === null || sellerName === undefined
-                    ? true
-                    : soldDate
-            " -->
             <v-icon large color="black"> mdi-arrow-left-top-bold</v-icon>
         </v-btn>
         <v-dialog persistent v-model="dialog" width="500">
@@ -26,35 +22,27 @@
                     </b>
                     <v-form ref="form" v-model="valid" lazy-validation>
                         <div class="row">
-                            <div
-                                class="text-danger"
-                                v-if="
-                                    this.end - this.start + 1 !==
-                                    this.end2 - this.start2 + 1
-                                "
-                            >
-                                The quantity of ticket must be
-                                {{ this.end2 - this.start2 + 1 }}
-                            </div>
                             <div class="col-md-12 mb-5">
                                 <select
                                     class="form-select"
                                     @change="searchTicket"
                                 >
+                                    <option disabled selected>
+                                        Select Bag
+                                    </option>
                                     <option
-                                        :value="[i.value, i.id]"
                                         v-for="i in items"
+                                        :value="[i.bag_name, i.id]"
                                         :key="i.id"
-                                        :disabled="i.disable"
                                     >
-                                        {{ i.value }}
+                                        {{ i.bag_name }}
                                     </option>
                                 </select>
                             </div>
                             <div class="col-md-12">
                                 <v-text-field
-                                    v-model="ticketName"
-                                    :rules="ticketNameRules"
+                                    v-model="ticket_type"
+                                    :rules="ticket_typeRules"
                                     disabled
                                     label="Ticket Type"
                                     required
@@ -64,6 +52,7 @@
                             </div>
                             <div class="col-md-6">
                                 <v-text-field
+                                    disabled
                                     v-model="start"
                                     :rules="startRules"
                                     label="Starting #"
@@ -83,7 +72,32 @@
                                 ></v-text-field>
                             </div>
                         </div>
-
+                        <div v-if="bagName !== ''">
+                            <v-checkbox
+                                v-if="
+                                    parseInt(quantity) !==
+                                    parseInt(end) - parseInt(start) + 1
+                                "
+                                v-model="transfer"
+                                :label="
+                                    transfer === false
+                                        ? ticket_type +
+                                          ' ' +
+                                          start +
+                                          ' to ' +
+                                          end +
+                                          ' transfer to ' +
+                                          bagName
+                                        : ticket_type +
+                                          ' ' +
+                                          (parseInt(end) + 1) +
+                                          ' to ' +
+                                          endDefault +
+                                          ' transfer to ' +
+                                          bagName
+                                "
+                            ></v-checkbox>
+                        </div>
                         <div class="col-md-6 mt-5 offset-md-6 mb-3">
                             <v-btn color="error" class="mr-4" @click="reset">
                                 CANCEL
@@ -95,10 +109,7 @@
                                 @click="validate"
                                 :loading="loading"
                                 :disabled="
-                                    parseInt(end) < parseInt(start)
-                                        ? true
-                                        : this.end - this.start + 1 !==
-                                          this.end2 - this.start2 + 1
+                                    parseInt(endDefault) < parseInt(end)
                                         ? true
                                         : false
                                 "
@@ -118,140 +129,101 @@ import Datepicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import moment from "moment";
 export default {
-    props: ["editId", "soldDate", "unitList"],
+    props: ["datas"],
     components: { Datepicker },
     data: () => ({
-        id: "",
-        bagList: "",
-        unitId: "",
-        loading: false,
-        eventId: "",
-        date: moment().format("LLL"),
         dialog: false,
-        valid: true,
-        unitName: "",
-        eventName: "",
-        start: "",
+        ticket_type: "",
+        ticket_typeRules: [(v) => !!v || "Ticket Name is required"],
         startRules: [(v) => !!v || "Starting # is required"],
-        ticketName: "",
-        ticketNameRules: [(v) => !!v || "Ticket Name is required"],
-        end: "",
-        end2: "",
-        start2: "",
         endRules: [(v) => !!v || "Ending # is required"],
-        notify: "",
-        ticketName: "",
-        bags: "",
+        start: "",
+        end: "",
+        unitId: "",
+        eventId: "",
+        bagId: "",
         bagName: "",
+        newBagId: "",
+        ticketId: "",
+        quantity: "",
+        loading: false,
+        endDefault: "",
+        transfer: false,
     }),
     mounted() {
         this.unitId = this.$route.path.split("/")[3];
-        this.eventId = this.$route.query.event_id[0];
-        this.unitName = this.$route.path.split("/")[4].replace(/_/g, " ");
-        this.eventName = this.$route.path.split("/")[5];
-        this.bagDestination = this.$route.path.split("/")[7];
-        this.bagId = this.$route.query.event_id[1];
-        this.sellerName = this.$route.query.event_id[2];
-        this.bagName = this.$route.query.event_id[3];
-
-        axios
-            .post("/get_available_bag2", {
-                foreign_unit: this.unitId,
-                foreign_spot: this.eventId,
-            })
-            .then((res) => {
-                this.items = res.data.status.map((res) => ({
-                    value: res.bag_name === this.bagName ? "" : res.bag_name,
-                    id: res.bag_name === this.bagName ? "" : res.id,
-                    disable: res.bag_name === this.bagName ? true : false,
-                }));
-            });
+        this.eventId = this.$route.path.split("/")[4];
+        this.bagId = this.$route.path.split("/")[8];
     },
     methods: {
-        logs(event) {
-            axios
-                .post("/add_logs", {
-                    unit_id: this.unitId,
-                    event_id: this.eventId,
-                    ticket_id: this.globalTicketId,
-                    descriptions: event,
-                })
-                .then((res) => {});
-        },
         searchTicket(e) {
-            this.bagList = e.target.value.split(",");
+            this.bagName = e.target.value.split(",")[0];
+            this.newBagId = e.target.value.split(",")[1];
+            this.ticket_type = this.datas.ticket_type;
+            this.start = this.datas.start;
+            this.end = this.datas.end;
+            this.endDefault = this.datas.end;
+            this.ticketId = this.datas.id;
+            this.quantity = this.datas.quantity;
         },
         openModal() {
-            this.id = this.editId[0];
-            this.start = this.editId[1];
-            this.start2 = this.editId[1];
-            this.end = this.editId[2];
-            this.end2 = this.editId[2];
-            this.ticketName = this.editId[3];
-            this.bags = this.editId[4];
-            this.dialog = true;
+            this.loading = true;
+            axios
+                .get(
+                    "/api/get_event_bags/" +
+                        this.unitId +
+                        "/" +
+                        this.eventId +
+                        "/all"
+                )
+                .then((res) => {
+                    this.false = true;
+                    this.dialog = true;
+                    this.loading = false;
+                    const bagList = res.data.status;
+                    const indexToRemove = bagList.findIndex(
+                        (obj) => obj.id === parseInt(this.bagId)
+                    );
+                    bagList.splice(indexToRemove, 1);
+                    this.items = bagList;
+                });
         },
         async validate() {
             const name = localStorage.getItem("name");
-            const insidePath = this.$route.path.split("/")[8];
             const { valid } = await this.$refs.form.validate();
 
-            if (this.bagList === "") {
-            } else if (valid) {
-                this.loading = true;
-                if (this.end - this.start + 1 === this.end2 - this.start2 + 1) {
-                    const bagz = this.$route.query.event_id[3];
-                    const transfer =
-                        name +
-                        " transfer the ticket from " +
-                        bagz +
-                        " to " +
-                        Object.values(this.bagList)[0] +
-                        " with the starting # of " +
-                        this.start +
-                        " to " +
-                        this.end;
-                    axios
-                        .post("/update_bag_location", {
-                            id: this.id,
-                            start: this.start,
-                            end: this.end,
-                            bag: this.bagList[0],
-                            bagId: this.bagList[1],
-                            event: this.eventId,
-                            unit: this.unitId,
-                            ticketName: this.ticketName,
-                            transfer: transfer,
-                        })
-                        .then((res) => {
-                            this.logs(transfer);
-                            this.$router.push({
-                                path:
-                                    "/administrator/dashboard/" +
-                                    this.unitId +
-                                    "/" +
-                                    this.unitName.replace(/ /g, "_") +
-                                    "/" +
-                                    this.eventName.replace(/ /g, "_") +
-                                    "/event_bags/inside_bag/loading",
-                                query: {
-                                    where: [
-                                        this.eventId,
-                                        String(this.bagId),
-                                        this.sellerName,
-                                        insidePath,
-                                    ],
-                                },
-                            });
-                        });
-                }
+            if (valid) {
                 this.loading = false;
+                axios
+                    .put("/transfer_ticket_in_another_bag", {
+                        bagid: this.newBagId,
+                        ticketid: this.ticketId,
+                        ticket_type: this.ticket_type,
+                        start: this.start,
+                        end: this.end,
+                        quantity: parseInt(this.end) - parseInt(this.start) + 1,
+                        transfer: this.transfer,
+                        endDefault: this.endDefault,
+                    })
+                    .then((res) => {
+                        this.reset();
+                        this.$router.push({
+                            path: this.$route.path,
+                            hash: "#" + Math.floor(Math.random() * 999999),
+                        });
+                        this.$swal({
+                            icon: "success",
+                            title: "Transferred success!",
+                            showConfirmButton: false,
+                            timer: 1000,
+                        });
+                    });
             }
         },
         reset() {
             this.dialog = false;
-
             this.$refs.form.reset();
+            this.bagName = "";
         },
     },
 };

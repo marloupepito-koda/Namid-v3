@@ -30,18 +30,6 @@
                                 Ticket Counting:
                                 <b>{{ editId.end - editId.start + 1 }}</b>
                             </div>
-                            <!-- <div class="col-md-12 mb-5">
-                                <div
-                                    class="col-md-12 text-danger"
-                                    v-if="
-                                        editId.end - editId.start + 1 !==
-                                        parseInt(editId.const)
-                                    "
-                                >
-                                    The total ticket and ticket counting must be
-                                    identical.
-                                </div>
-                            </div> -->
                             <div class="col-md-6">
                                 <v-text-field
                                     disabled
@@ -98,12 +86,6 @@
                                 :loading="loading"
                                 @click="validate"
                             >
-                                <!-- :disabled="
-                                    parseInt(editId.end - editId.start + 1) ===
-                                    parseInt(editId.const)
-                                        ? false
-                                        : true
-                                " -->
                                 SUBMIT
                             </v-btn>
                         </div>

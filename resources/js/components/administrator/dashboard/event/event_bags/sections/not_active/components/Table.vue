@@ -34,22 +34,19 @@
                 <tbody>
                     <tr v-for="i in getData" :key="i.name">
                         <td>
-                            <a
+                            <v-btn
+                                variant="text"
                                 href="javascript:;"
-                                @click="
-                                    showTickets(i.id, i.seller_name, i.bag_name)
-                                "
-                                >{{ i.bag_name }}</a
+                                @click="showTickets(i.id, i.seller)"
+                                ><u>{{ i.bag_name }}</u></v-btn
                             >
                         </td>
                         <td>
                             <a
                                 href="javascript:;"
-                                @click="
-                                    showTickets(i.id, i.seller_name, i.bag_name)
-                                "
-                                v-if="i.seller_name !== null"
-                                >{{ i.seller_name }}</a
+                                @click="showTickets(i.id, i.seller)"
+                                v-if="i.seller !== null"
+                                >{{ i.seller }}</a
                             >
                             <v-chip
                                 size="small"
@@ -71,24 +68,21 @@
                         </td>
                         <td>
                             {{
-                                i.remaining_ticket === null
+                                i.remaining === null
                                     ? 0
-                                    : i.remaining_ticket.replace(
+                                    : i.remaining.replace(
                                           /(\d)(?=(\d\d\d)+(?!\d))/g,
                                           "$1,"
                                       )
                             }}
                         </td>
 
-                        <td>{{ i.bag_date }}</td>
+                        <td>{{ i.date }}</td>
                         <td class="text-center">
                             <v-chip
                                 size="small"
                                 v-if="
-                                    i.remaining_ticket === null ||
-                                    i.remaining_ticket === '0' ||
-                                    i.n_o_r === null ||
-                                    i.n_o_r === 0
+                                    i.remaining === null || i.remaining === '0'
                                 "
                                 color="red"
                                 text-color="white"
@@ -112,7 +106,7 @@
                                 variant="outlined"
                                 large
                                 color="blue"
-                                @click="returnBag(i.id, i.seller_name)"
+                                @click="returnBag(i.id, i.seller, i.bag_name)"
                             >
                                 <v-icon size="large" color="blue">
                                     mdi-arrow-down-left-bold</v-icon
@@ -120,7 +114,7 @@
                             </v-btn>
                         </td>
                         <td class="text-center">
-                            <Modal :editId="i.id" :bag="i.bag_name" />
+                            <EditModal :datas="i" />
                         </td>
                     </tr>
                 </tbody>
@@ -131,13 +125,13 @@
 
 <script>
 import moment from "moment";
-import Modal from "./../../all/components/Modal.vue";
+import EditModal from "./../../../components/EditModal.vue";
 export default {
     mounted() {
         this.mount();
     },
     components: {
-        Modal,
+        EditModal,
     },
     data: () => ({
         load: true,
@@ -150,13 +144,29 @@ export default {
         eventName: "",
         tickets: [],
         ticketList: [],
-        currentPage: 1,
-        currentPerPage: 20,
         date: "",
         bags: [],
     }),
+    created() {
+        this.$watch(
+            () => this.$route.params,
+            (toParams, previousParams) => {
+                this.mount();
+            }
+        );
+    },
     methods: {
-        returnBag(id, sellerName) {
+        logs(event) {
+            axios
+                .post("/add_logs", {
+                    unit_id: this.unitId,
+                    event_id: this.eventId,
+                    ticket_id: "",
+                    descriptions: event,
+                })
+                .then((res) => {});
+        },
+        returnBag(id) {
             this.$swal({
                 title: "Are you sure?",
                 text: "You wanna return this bag in Event?",
@@ -169,12 +179,10 @@ export default {
             }).then((result) => {
                 if (result.isConfirmed) {
                     axios
-                        .post("/return_bag", {
+                        .put("/return_bag", {
                             id: id,
                             status: "Returned",
-                            spot: this.eventName.replace(/_/g, " "),
-                            not: "returnBackEventInventory",
-                            sellerName: sellerName,
+                            return: "Returned",
                         })
                         .then((res) => {
                             this.mount();
@@ -188,48 +196,32 @@ export default {
                 }
             });
         },
-        showTickets(id, sellerName) {
+        showTickets(id) {
             this.$router.push({
                 path:
                     "/administrator/dashboard/" +
                     this.unitId +
                     "/" +
-                    this.unitName +
-                    "/" +
-                    this.eventName +
-                    "/event_bags/inside_bag/all_tickets",
-                query: { event_id: [this.eventId, String(id), sellerName] },
+                    this.eventId +
+                    "/event_bags/inside_bag/all_tickets/" +
+                    String(id),
             });
         },
         mount() {
-            const countingPage = this.currentPage * this.currentPerPage;
-
-            this.date =
-                this.$route.query.searchDate === undefined
-                    ? "undefined"
-                    : moment(new Date(this.$route.query.searchDate)).format(
-                          "MM-DD-YY"
-                      );
             this.unitId = this.$route.path.split("/")[3];
-            this.unitName = this.$route.path.split("/")[4];
-            this.eventName = this.$route.path.split("/")[5];
-            this.eventId = this.$route.query.event_id[0];
-            this.bagId = this.$route.query.event_id[1];
+            this.eventId = this.$route.path.split("/")[4];
+
             axios
                 .get(
-                    "/api/get_event_inventory_bags/" +
-                        [
-                            countingPage,
-                            this.date,
-                            this.unitId,
-                            this.eventId,
-                            "Not Active",
-                        ]
+                    "/api/get_event_bags/" +
+                        this.unitId +
+                        "/" +
+                        this.eventId +
+                        "/all"
                 )
                 .then((res) => {
-                    this.getData = res.data.status.data;
-                    this.getData2 = res.data.status.data;
-                    this.bags = res.data.status.data.map((zzz) => zzz.bag_name);
+                    this.getData = res.data.status;
+                    this.getData2 = res.data.status;
                     this.load = false;
                 });
         },
