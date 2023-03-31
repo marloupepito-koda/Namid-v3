@@ -24,6 +24,7 @@
                     <th class="text-left">Amount</th>
                     <th class="text-left">Starting #</th>
                     <th class="text-left">Ending #</th>
+                    <th class="text-left">Status</th>
                     <th class="text-left">Sold At</th>
                     <th class="text-left">Designated At</th>
                     <th class="text-left">Info</th>
@@ -40,7 +41,7 @@
                     <td>
                         {{ i.price }}
                     </td>
-                    <td>{{ i.price / i.count }}</td>
+                    <td>{{ parseFloat(i.price) / parseFloat(i.count) }}</td>
                     <td>{{ i.quantity }}</td>
                     <td>
                         {{ i.quantity * i.price }}
@@ -52,11 +53,27 @@
                         {{ i.end }}
                     </td>
                     <td>
-                        {{ i.date }}
+                        <v-chip
+                            v-if="i.status === 'Unsold'"
+                            color="red"
+                            text-color="white"
+                        >
+                            Unsold
+                        </v-chip>
+                        <v-chip v-else color="green" text-color="white">
+                            Unsold
+                        </v-chip>
+                    </td>
+                    <td>
+                        <div v-if="i.status === 'Sold'">
+                            {{ i.date }}
+                        </div>
+                        <div v-else>Not Available</div>
                     </td>
                     <td class="text-center">
                         {{ i.date }}
                     </td>
+
                     <td>
                         <v-tooltip :text="i.remember_token">
                             <template v-slot:activator="{ props }">
@@ -69,32 +86,15 @@
                             </template>
                         </v-tooltip>
                     </td>
-                    <td
-                        class="text-center"
-                        v-if="
-                            new Date().getDate() !==
-                            new Date(i.created_at).getDate()
-                        "
-                    >
-                        <Option
-                            :unitList="unitList"
-                            :soldDate="i.date2 === null ? false : true"
-                            :editId="i"
-                        />
-                    </td>
-                    <td v-else>Unavailable</td>
                     <td>
-                        <!-- <ModalEdit
-                            :soldDate="i.date2 === null ? false : true"
-                            :editId="i"
-                        /> -->
+                        <Option :datas="i" />
+                    </td>
+                    <td>
+                        <ModalEdit :datas="i" />
                     </td>
 
                     <td>
-                        <!-- <ModalSold
-                            :soldDate="i.date2 === null ? false : true"
-                            :datas="i"
-                        /> -->
+                        <ModalSold :datas="i" />
                     </td>
                 </tr>
             </thead>
@@ -159,7 +159,8 @@ export default {
                         "/" +
                         this.eventId +
                         "/" +
-                        this.bagId
+                        this.bagId +
+                        "/sold"
                 )
                 .then((res) => {
                     this.getData2 = res.data.status;

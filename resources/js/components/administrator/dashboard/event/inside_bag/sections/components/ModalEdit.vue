@@ -64,6 +64,7 @@ export default {
     mounted() {
         this.unitId = this.$route.path.split("/")[3];
         this.eventId = this.$route.path.split("/")[4];
+        this.price = this.datas.price;
     },
     methods: {
         async validate() {
@@ -83,6 +84,7 @@ export default {
                             timer: 1500,
                         });
                         this.$router.push({
+                            path: this.$route.path,
                             hash: "#" + Math.floor(Math.random() * 999999),
                         });
                     });

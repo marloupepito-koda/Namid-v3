@@ -25,7 +25,7 @@ class TicketBagsController extends Controller
                     $ending1= $request->transfer === false?$request->end:$request->endDefault;
                     $quantity1 = $request->transfer === false?($request->end - $request->start) +1:($request->endDefault - $request->end);
 
-                    $starting2= $request->transfer === false?$request->end:$request->start;
+                    $starting2= $request->transfer === false?$request->end  +1:$request->start;
                     $ending2= $request->transfer === false?$request->endDefault:$request->end;
                     $quantity2 = $request->transfer === false?($request->endDefault - $request->end):($request->end - $request->start)+1;
 
@@ -125,18 +125,47 @@ class TicketBagsController extends Controller
               
 
     }
-    public function get_tickets_in_bag($unitid,$eventid,$bagid){
-         $bags = TicketBags::where([['unitid','=',$unitid],['eventid','=',$eventid],['bagid','=',$bagid]])->get();
-         return response()->json([
-                'status' => $bags
-                ]);
+    public function get_tickets_in_bag($unitid,$eventid,$bagid,$type){
+         if ($type === 'all') {
+               $bags = TicketBags::where([
+                         ['unitid', '=', $unitid],
+                         ['eventid', '=', $eventid],
+                         ['bagid', '=', $bagid],
+               ])->get();
+               return response()->json([
+               'status' => $bags
+               ]);
+          } else if ($type === 'sold') {
+                $bags = TicketBags::where([
+                         ['unitid', '=', $unitid],
+                         ['eventid', '=', $eventid],
+                         ['bagid', '=', $bagid],
+                         ['status', '=', 'Sold']
+               ])->get();
+               return response()->json([
+               'status' => $bags
+               ]);
+          } else {
+                $bags = TicketBags::where([
+                         ['unitid', '=', $unitid],
+                         ['eventid', '=', $eventid],
+                         ['bagid', '=', $bagid],
+                         ['status', '=', 'Unsold']
+               ])->get();
+               return response()->json([
+               'status' => $bags
+               ]);
+          }
+          
      }
 
     public function add_ticket_in_bag(Request $request){
 
        $ei = EventInventory::where('id',$request->ticketid)->first();
        $bag = EventBags::where('id',$request->bagid)->first();
-            TicketBags::create([
+       $quantity = intval($request->end )- intval($request->start) +1;
+          // this is the inserting ticket in a bag
+                $result = TicketBags::create([
                     'unitid' => $request->unitid,
                     'eventid' => $request->eventid,
                     'ticket_type' => $ei->ticket_type,
@@ -149,10 +178,48 @@ class TicketBagsController extends Controller
                     'bind' => $ei->bind,
                     'count' => $ei->count,
                     'date' => $request->date,
-                    'quantity' =>intval($request->end )- intval($request->start) +1,
+                    'quantity' =>$quantity,
                     'status' =>$request->status,
+          //
                 ]);
+                if($result){
+                     if((intval($request->start) - intval($ei->start)) !== 0){
 
+                         $firstQuantity = ($request->start - $ei->start);
+                         $firstStart = $ei->start;
+                         $firstEnd = $request->start;
+                         EventInventory::where('id',$request->ticketid)->update([
+                              'quantity' =>$firstQuantity,
+                              'remaining' =>$firstQuantity,
+                              'start' =>$firstStart,
+                              'end' =>$firstEnd -1
+                         ]);
+                         
+                     }if((intval($ei->end) - intval($request->end))  !== 0){
+                         $endQuantity = ($ei->end - $request->end);
+                         $endStart = $request->end;
+                         $endEnd = $ei->end;
+
+                          EventInventory::create([
+                              'unitid' => $ei->unitid,
+                              'eventid' =>$ei->eventid,
+                              'ticket_type' =>$ei->ticket_type,
+                              'ticket_name' =>$ei->ticket_name,
+                              'price' =>$ei->price,
+                              'bind' =>$ei->bind,
+                              'count' =>$ei->count,
+                              'start' =>$endStart,
+                              'end' =>$endEnd,
+                              'date' =>$ei->date,
+                              'quantity' =>$endQuantity,
+                              'remaining' =>$endQuantity
+                         ]);
+                     }
+                     
+                     EventInventory::where('id',$request->ticketid)->update([
+                          'quantity' => $ei->quantity - $quantity,
+                     ]);
+                }
              return response()->json([
                 'status' =>'success'
                 ]);

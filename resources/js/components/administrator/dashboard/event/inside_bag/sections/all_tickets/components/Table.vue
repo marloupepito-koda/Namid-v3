@@ -159,7 +159,8 @@ export default {
                         "/" +
                         this.eventId +
                         "/" +
-                        this.bagId
+                        this.bagId +
+                        "/all"
                 )
                 .then((res) => {
                     this.getData2 = res.data.status;
