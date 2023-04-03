@@ -5,7 +5,7 @@
                 <v-select
                     @update:modelValue="unit"
                     v-model="unitName"
-                    :items="items1"
+                    :items="items1.map((res) => res.unit_name)"
                     :rules="unitNameRules"
                     item-title="text"
                     label="Unit Name"
@@ -65,7 +65,7 @@ export default {
     },
     data: () => ({
         items: [],
-        unitId: "",
+        unitName: "",
         addId: "",
         dialog: false,
         valid: true,
@@ -78,25 +78,20 @@ export default {
         items1: [],
         items2: [],
         loading: false,
+        unitId: "",
+        eventId: "",
     }),
 
     methods: {
         unit(e) {
+            const id = this.items1.find((obj) => obj.unit_name === e);
             this.eventName = "";
             axios
-                .get("/api/get_every_spot2/" + e)
+                .get("/api/get_events_in_unit/" + id.id)
                 .then((res) => {
                     this.unitName = e;
-                    this.items2 = res.data.status.map(
-                        (a) => a.ee_events_unit_spot
-                    );
-                    let urls = ["/api/get_every_spot2/" + e];
-
-                    caches.open("static_cache").then((cache) => {
-                        cache.addAll(urls).then(() => {
-                            console.log("Data cached ");
-                        });
-                    });
+                    this.unitId = id.id;
+                    this.items2 = res.data.status.map((a) => a.events_name);
                 })
                 .catch((err) => {
                     this.eventName = "";
@@ -105,31 +100,13 @@ export default {
         event(e) {
             this.eventName = e;
             axios
-                .get("/api/get_every_spot3/" + [this.unitName, e])
+                .get("/api/get_every_events/" + this.unitId + "/" + e)
                 .then((res) => {
-                    const unit_id = res.data.unit;
-                    const spot_id = res.data.spot;
-                    axios
-                        .get("/api/get_ticket_sold/" + [unit_id, spot_id])
-                        .then((result) => {
-                            let urls = [
-                                "/api/get_ticket_sold/" + [unit_id, spot_id],
-                                "/api/get_every_spot3/" + [this.unitName, e],
-                            ];
-
-                            caches.open("static_cache").then((cache) => {
-                                cache.addAll(urls).then(() => {
-                                    console.log("Data cached ");
-                                });
-                            });
-                            const startDate = new Date(
-                                result.data.status.ee_events_unit_start_date
-                            );
-                            const endDate = new Date(
-                                result.data.status.ee_events_unit_end_date
-                            );
-                            this.date = [startDate, endDate];
-                        });
+                    const startDate = new Date(res.data.status.start);
+                    const endDate = new Date(res.data.status.end);
+                    this.date = [startDate, endDate];
+                    this.unitId = res.data.status.unitid;
+                    this.eventId = res.data.status.id;
                 })
                 .catch((err) => {});
         },
@@ -144,15 +121,14 @@ export default {
                     this.loading = false;
                 } else {
                     this.$router.push({
-                        path: "/administrator/transaction/loading",
+                        path: "/administrator/transaction",
                         query: {
-                            searchTransaction: [
-                                this.unitName,
-                                this.eventName,
-                                start,
-                                end,
-                            ],
+                            unitid: this.unitId,
+                            eventid: this.eventId,
+                            start: start,
+                            end: end,
                         },
+                        hash: "#" + Math.floor(Math.random() * 999999),
                     });
                     this.loading = false;
                 }
@@ -176,29 +152,12 @@ export default {
             axios
                 .get("/api/get_all_units")
                 .then((res) => {
-                    this.items1 = res.data.status.map(
-                        (a) => a.ee_client_unit_name
-                    );
+                    this.items1 = res.data.status.map((a) => ({
+                        unit_name: a.units_name,
+                        id: a.id,
+                    }));
                 })
                 .catch((err) => {});
-            if (this.eventName !== null) {
-                axios
-                    .get("/api/get_every_spot2/" + this.unitName)
-                    .then((res) => {
-                        this.items2 = res.data.status.map(
-                            (a) => a.ee_events_unit_spot
-                        );
-
-                        let urls = ["/api/get_every_spot2/" + this.unitName];
-
-                        caches.open("static_cache").then((cache) => {
-                            cache.addAll(urls).then(() => {
-                                console.log("Data cached ");
-                            });
-                        });
-                    })
-                    .catch((err) => {});
-            }
         },
     },
 };

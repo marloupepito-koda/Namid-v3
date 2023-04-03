@@ -10,7 +10,7 @@
                         <small>from</small>
                         <address class="mt-5px mb-5px">
                             <strong class="text-dark">{{
-                                eventData.ee_client_unit_name
+                                eventData.units_fullname
                             }}</strong
                             ><br />
                             {{ dateNow }}<br />
@@ -58,15 +58,21 @@
                                     v-for="(item, index) in soldData"
                                     :key="index"
                                 >
-                                    <td>{{ item.seller_name }}</td>
+                                    <td>{{ item.seller }}</td>
                                     <td class="text-center">
-                                        {{ item.ticket_name }}
+                                        {{ item.ticket_type }}
                                     </td>
                                     <td class="text-end">
                                         {{
-                                            String(
-                                                item.ticket_start_number
-                                            ).replace(
+                                            String(item.start).replace(
+                                                /(\d)(?=(\d\d\d)+(?!\d))/g,
+                                                "$1,"
+                                            )
+                                        }}
+                                    </td>
+                                    <td class="text-end">
+                                        {{
+                                            String(item.end).replace(
                                                 /(\d)(?=(\d\d\d)+(?!\d))/g,
                                                 "$1,"
                                             )
@@ -75,19 +81,7 @@
                                     <td class="text-end">
                                         {{
                                             String(
-                                                item.ticket_end_number
-                                            ).replace(
-                                                /(\d)(?=(\d\d\d)+(?!\d))/g,
-                                                "$1,"
-                                            )
-                                        }}
-                                    </td>
-                                    <td class="text-end">
-                                        {{
-                                            String(
-                                                item.ticket_end_number -
-                                                    item.ticket_start_number +
-                                                    1
+                                                item.end - item.start + 1
                                             ).replace(
                                                 /(\d)(?=(\d\d\d)+(?!\d))/g,
                                                 "$1,"
@@ -99,7 +93,7 @@
                                     <td class="text-end">
                                         $
                                         {{
-                                            String(item.ticket_price).replace(
+                                            String(item.price).replace(
                                                 /(\d)(?=(\d\d\d)+(?!\d))/g,
                                                 "$1,"
                                             )
@@ -108,7 +102,12 @@
                                     <td class="text-end">
                                         $
                                         {{
-                                            String(item.ticket_total).replace(
+                                            String(
+                                                parseFloat(item.price) *
+                                                    (parseFloat(item.end) -
+                                                        parseFloat(item.start) +
+                                                        1)
+                                            ).replace(
                                                 /(\d)(?=(\d\d\d)+(?!\d))/g,
                                                 "$1,"
                                             )
@@ -174,69 +173,70 @@ import axios from "axios";
 import moment from "moment";
 export default {
     mounted() {
-        if (this.$route.query.searchTransaction !== undefined) {
-            this.notify = "Searching...";
-            axios
-                .get(
-                    "/api/get_units/" +
-                        [
-                            this.$route.query.searchTransaction[0],
-                            this.$route.query.searchTransaction[1],
-                            moment(
-                                this.$route.query.searchTransaction[2]
-                            ).format("MM-DD-YYYY"),
-                            moment(
-                                this.$route.query.searchTransaction[3]
-                            ).format("MM-DD-YYYY"),
-                        ]
-                )
-                .then((res) => {
-                    this.start = this.$route.query.searchTransaction[2];
-                    this.end = this.$route.query.searchTransaction[3];
-
-                    let urls = [
-                        "/api/get_units/" +
-                            [
-                                this.$route.query.searchTransaction[0],
-                                this.$route.query.searchTransaction[1],
-                                moment(
-                                    this.$route.query.searchTransaction[2]
-                                ).format("MM-DD-YYYY"),
-                                moment(
-                                    this.$route.query.searchTransaction[3]
-                                ).format("MM-DD-YYYY"),
-                            ],
-                    ];
-
-                    caches.open("static_cache").then((cache) => {
-                        cache.addAll(urls).then(() => {
-                            console.log("Data cached ");
-                        });
-                    });
-                    if (res.data.sold.length !== 0) {
-                        this.notify = "";
-                        this.eventData = res.data.transaction;
-                        this.soldData = res.data.sold;
-                        this.hideInvoice = true;
-                        const amount = res.data.sold
-                            .map((aa) => parseFloat(aa.ticket_total))
-                            .reduce((partialSum, a) => partialSum + a, 0);
-                        // .reduce((partialSum, a) => partialSum + a, 0)
-                        this.total = amount;
-                        const price = res.data.sold
-                            .map((aa) => parseFloat(aa.ticket_price))
-                            .reduce((partialSum, a) => partialSum + a, 0);
-                        this.atp = parseFloat(price / this.soldData.length);
-                    } else {
-                        this.soldData = [];
-                        this.eventData = [];
-                        this.notify = "Not Found!";
-                    }
-                })
-                .catch((err) => {});
-        } else {
-            this.hideInvoice = false;
-        }
+        this.mount();
+    },
+    created() {
+        this.$watch(
+            () => this.$route.params,
+            (toParams, previousParams) => {
+                this.mount();
+            }
+        );
+    },
+    methods: {
+        mount() {
+            if (this.$route.query.end !== undefined) {
+                this.notify = "Searching...";
+                axios
+                    .get(
+                        "/api/search_spot_transaction/" +
+                            this.$route.query.unitid +
+                            "/" +
+                            this.$route.query.eventid +
+                            "/" +
+                            moment(this.$route.query.start).format(
+                                "MM-DD-YYYY" +
+                                    "/" +
+                                    moment(this.$route.query.end).format(
+                                        "MM-DD-YYYY"
+                                    )
+                            )
+                    )
+                    .then((res) => {
+                        this.start = this.$route.query.start;
+                        this.end = this.$route.query.end;
+                        if (res.data.status.length !== 0) {
+                            this.notify = "";
+                            this.eventData = res.data.transaction;
+                            this.soldData = res.data.sold;
+                            this.hideInvoice = true;
+                            const amount = res.data.sold
+                                .map(
+                                    (aa) =>
+                                        parseFloat(aa.price) *
+                                        (parseFloat(aa.end) -
+                                            parseFloat(aa.start) +
+                                            1)
+                                )
+                                .reduce((partialSum, a) => partialSum + a, 0);
+                            this.total = amount;
+                            const price = res.data.sold
+                                .map((aa) => parseFloat(aa.price))
+                                .reduce((partialSum, a) => partialSum + a, 0);
+                            this.atp = parseFloat(
+                                parseFloat(price) / this.soldData.length
+                            );
+                        } else {
+                            this.soldData = [];
+                            this.eventData = [];
+                            this.notify = "Not Found!";
+                        }
+                    })
+                    .catch((err) => {});
+            } else {
+                this.hideInvoice = false;
+            }
+        },
     },
     data() {
         return {

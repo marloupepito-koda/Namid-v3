@@ -31,8 +31,8 @@
                         <th class="text-left">ATP</th>
                         <th class="text-left">Remaining</th>
                         <th class="text-left">Date</th>
+                        <th class="text-center">Status</th>
                         <th class="text-center">Edit</th>
-                        <!-- <th class="text-center">Show</th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -57,6 +57,22 @@
 
                         <td>{{ i.remaining }}</td>
                         <td>{{ i.date }}</td>
+                        <td>
+                            <v-chip
+                                size="small"
+                                v-if="i.status === null"
+                                color="red"
+                                text-color="white"
+                                >Unused</v-chip
+                            >
+                            <v-chip
+                                size="small"
+                                v-else
+                                color="success"
+                                text-color="white"
+                                >{{ i.status }}</v-chip
+                            >
+                        </td>
                         <td>
                             <ModalEdit :editId="i" />
                         </td>

@@ -34,24 +34,19 @@
                 </thead>
                 <tbody>
                     <tr v-for="i in getData" :key="i.name">
-                        <td>{{ i.ticket_bag }}</td>
-                        <td>{{ i.seller_name }}</td>
-                        <td>{{ i.ticket_name }}</td>
-                        <td>{{ i.ticket_start_number }}</td>
-                        <td>{{ i.ticket_end_number }}</td>
-                        <td>{{ i.ticket_price }}</td>
+                        <td>{{ i.bag_name }}</td>
+                        <td>{{ i.seller }}</td>
+                        <td>{{ i.ticket_type }}</td>
+                        <td>{{ i.start }}</td>
+                        <td>{{ i.end }}</td>
+                        <td>{{ i.price }}</td>
                         <td>
-                            {{
-                                i.ticket_end_number - i.ticket_start_number + 1
-                            }}
+                            {{ i.end - i.start + 1 }}
                         </td>
-                        <td>{{ i.ticket_total }}</td>
+                        <td>{{ i.end - i.start + 1 * i.price }}</td>
                         <td>
-                            <div v-if="i.ticket_date2 === null">
-                                Remaining Tickets
-                            </div>
-                            <div v-else>
-                                {{ i.ticket_date2 }}
+                            <div>
+                                {{ i.date }}
                             </div>
                         </td>
                     </tr>
@@ -95,29 +90,22 @@ export default {
     },
     mounted() {
         this.unitId = this.$route.path.split("/")[3];
-        this.unitName = this.$route.path.split("/")[4];
-        this.eventName = this.$route.path.split("/")[5];
-        this.eventId = this.$route.query.event_id;
-
+        this.eventId = this.$route.path.split("/")[4];
         this.date =
             this.$route.query.searchDate === undefined
                 ? moment(new Date()).format("LLL")
                 : moment(new Date(this.$route.query.searchDate)).format("LLL");
 
         axios
-            .get("/api/get_event_ticket_history/" + [this.unitId, this.eventId])
+            .get(
+                "/api/get_event_ticket_sold_history/" +
+                    this.unitId +
+                    "/" +
+                    this.eventId
+            )
 
             .then((res) => {
-                let urls = [
-                    "/api/get_event_ticket_history/" +
-                        [this.unitId, this.eventId],
-                ];
-                caches.open("static_cache").then((cache) => {
-                    cache.addAll(urls).then(() => {
-                        console.log("Data cached ");
-                    });
-                });
-
+                console.log("waaaaa", res.data.status);
                 this.getData = Object.values(res.data.status);
                 this.getData2 = Object.values(res.data.status);
                 this.load = false;

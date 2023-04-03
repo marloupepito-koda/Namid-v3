@@ -152,6 +152,7 @@ export default {
                             path: this.$route.path,
                             hash: "#" + Math.floor(Math.random() * 999999),
                         });
+                     //   alert(res.data.status)
                         this.$swal({
                             icon: "success",
                             title: "Tickets added in a bag.",

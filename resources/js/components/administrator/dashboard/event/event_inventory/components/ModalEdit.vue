@@ -6,6 +6,7 @@
             variant="outlined"
             color="blue"
             @click="openModal(editId)"
+            :disabled="editId.status === 'Used'?true:false"
         >
             <v-icon size="large" color="blue">
                 mdi-clipboard-edit-outline

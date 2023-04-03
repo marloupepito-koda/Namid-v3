@@ -30,6 +30,9 @@ Route::delete('/delete_unit/{id}', [UnitsController::class, 'delete_unit']);
 
 Route::get('/get_events_in_unit/{id}', [EventsController::class, 'get_events_in_unit']);
 Route::delete('/delete_event/{id}', [EventsController::class, 'delete_event']);
+Route::get('/get_every_events/{unitid}/{eventid}', [EventsController::class, 'get_every_events']);
+
+
 
 Route::get('/get_unit_ticket_inventory/{id}', [UnitInventoryController::class, 'get_unit_ticket_inventory']);
 
@@ -46,5 +49,10 @@ Route::get('/get_returned_bag/{unitid}/{returned}', [EventBagsController::class,
 
 
 Route::get('/get_tickets_in_bag/{unitid}/{eventid}/{bagid}/{type}', [TicketBagsController::class, 'get_tickets_in_bag']);
+Route::get('/get_event_ticket_sold_history/{unitid}/{eventid}', [TicketBagsController::class, 'get_event_ticket_sold_history']);
+Route::get('/search_spot_transaction/{unitid}/{eventid}/{start}/{end}', [TicketBagsController::class, 'search_spot_transaction']);
+Route::get('/get_committee_settlement/{unitid}/{eventid}', [TicketBagsController::class, 'get_committee_settlement']);
+
+
 
 

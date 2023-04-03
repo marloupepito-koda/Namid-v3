@@ -197,50 +197,49 @@ import axios from "axios";
 import moment from "moment";
 export default {
     mounted() {
-        if (this.$route.query.searchSettlement !== undefined) {
-            this.notify = "Searching...";
-            axios
-                .get(
-                    "/api/get_unit_settlement_ticket_sold/" +
-                        [
-                            this.$route.query.searchSettlement[0],
-                            this.$route.query.searchSettlement[1],
-                        ]
-                )
-                .then((res) => {
-                    if (res.data.status.length !== 0) {
-                        this.notify = "";
-                        this.hideInvoice = true;
-                        const ticket = res.data.status
-                            .map((a) => parseInt(a.ticket_total))
-                            .reduce((partialSum, a) => partialSum + a, 0);
-                        this.ticketPrice = ticket;
-                        let urls = [
-                            "/api/get_unit_settlement_ticket_sold/" +
-                                [
-                                    this.$route.query.searchSettlement[0],
-                                    this.$route.query.searchSettlement[1],
-                                ],
-                        ];
-
-                        caches.open("static_cache").then((cache) => {
-                            cache.addAll(urls).then(() => {
-                                console.log("Data cached ");
-                            });
-                        });
-                    } else {
-                        this.notify = "Not Found!";
-                        this.hideInvoice = false;
-                    }
-                });
-        } else {
-            this.hideInvoice = false;
-        }
+        this.mount();
+    },
+    created() {
+        this.$watch(
+            () => this.$route.params,
+            (toParams, previousParams) => {
+                this.mount();
+            }
+        );
     },
     methods: {
-        // concessionsCancel() {
-        //     this.concessions = "";
-        // },
+        mount() {
+            if (this.$route.query.eventid !== undefined) {
+                this.notify = "Searching...";
+                axios
+                    .get(
+                        "/api/get_committee_settlement/" +
+                            this.$route.query.unitid +
+                            "/" +
+                            this.$route.query.eventid
+                    )
+                    .then((res) => {
+                        console.log("ssss", res.data.status);
+                        if (res.data.status.length !== 0) {
+                            this.notify = "";
+                            this.hideInvoice = true;
+                            const ticket = res.data.status
+                                .map(
+                                    (a) =>
+                                        parseFloat(a.quantity) *
+                                        parseFloat(a.price)
+                                )
+                                .reduce((partialSum, a) => partialSum + a, 0);
+                            this.ticketPrice = ticket;
+                        } else {
+                            this.notify = "Not Found!";
+                            this.hideInvoice = false;
+                        }
+                    });
+            } else {
+                this.hideInvoice = false;
+            }
+        },
         concessionsClick() {
             this.hide1 = false;
         },

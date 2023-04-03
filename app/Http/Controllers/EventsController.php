@@ -7,6 +7,13 @@ use Illuminate\Http\Request;
 class EventsController extends Controller
 {
 
+        public function get_every_events($unitid,$eventName){
+           $events = Events::where([['unitid','=',$unitid],['events_name','=',$eventName]])->first();
+
+            return response()->json([
+                'status' => $events
+                ]);
+        }
     public function update_event(Request $request){
               Events::where('id',$request->id)
                     ->update(

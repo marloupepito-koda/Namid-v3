@@ -22,5 +22,6 @@ class EventInventory extends Model
         'end',
         'remaining',
         'date',
+        'status'
     ];
 }

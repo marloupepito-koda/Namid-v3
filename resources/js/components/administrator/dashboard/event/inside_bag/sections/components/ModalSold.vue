@@ -24,7 +24,6 @@
                             </div>
                             <div class="col-md-6">
                                 <v-text-field
-                                    disabled
                                     v-model="start"
                                     :rules="startRules"
                                     label="Starting #"
@@ -88,10 +87,12 @@ export default {
         dialog: false,
         id: "",
         endDefault: "",
+        quantity: "",
     }),
     mounted() {
         this.unitId = this.$route.path.split("/")[3];
         this.eventId = this.$route.path.split("/")[4];
+        this.date = moment().format("MM-DD-YYYY");
     },
     methods: {
         openModal() {
@@ -100,6 +101,7 @@ export default {
             this.end = this.datas.end;
             this.endDefault = this.datas.end;
             this.id = this.datas.id;
+            this.quantity = this.datas.quantity;
         },
 
         async validate() {
@@ -108,7 +110,8 @@ export default {
                 id: this.id,
                 start: this.start,
                 end: this.end,
-                date: moment().format("LLL"),
+                date: this.date,
+                quantity: this.quantity,
             };
             if (valid) {
                 axios.post("/create_ticket_sold", data).then((res) => {

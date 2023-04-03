@@ -54,14 +54,10 @@
                     </td>
                     <td>
                         <v-chip
-                            v-if="i.status === 'Unsold'"
-                            color="red"
+                            :color="i.status === 'Unsold'?'red':'green'"
                             text-color="white"
                         >
-                            Unsold
-                        </v-chip>
-                        <v-chip v-else color="green" text-color="white">
-                            Unsold
+                            {{i.status}}
                         </v-chip>
                     </td>
                     <td>

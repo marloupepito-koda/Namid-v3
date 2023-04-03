@@ -46,7 +46,6 @@ import TicketsInsideBagSold from "./../administrator/dashboard/event/inside_bag/
 import TicketsInsideBagUnsold from "./../administrator/dashboard/event/inside_bag/sections/unsold_tickets/Page.vue";
 import InsideLoading from "./../administrator/dashboard/event/inside_bag/components/Loading.vue";
 
-import TransactionLoading from "./../administrator/transaction/components/Loading.vue";
 import SettlementLoading from "./../administrator/settlement/components/Loading.vue";
 import AccountLoading from "./../administrator/account/components/Loading.vue";
 
@@ -101,10 +100,6 @@ const routes = [
         children: [
             { path: "/administrator/dashboard", component: DashboardPage },
             { path: "/administrator/transaction", component: TransactionPage },
-            {
-                path: "/administrator/transaction/loading",
-                component: TransactionLoading,
-            },
             { path: "/administrator/settlement", component: SettlementPage },
             {
                 path: "/administrator/settlement/loading",
