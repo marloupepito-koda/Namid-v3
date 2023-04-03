@@ -122,9 +122,7 @@ export default {
         axios
             .get("/api/get_all_units")
             .then((res) => {
-                this.unitItem = res.data.status.map(
-                    (a) => a.ee_client_unit_name
-                );
+                this.unitItem = res.data.status.map((a) => a.units_name);
             })
             .catch((err) => {});
     },
@@ -152,8 +150,9 @@ export default {
                             timer: 1500,
                         });
                         this.$router.push({
-                            path: "/administrator/accounts/loading",
+                            hash: "#" + Math.floor(Math.random() * 999999),
                         });
+                        this.dialog = false;
                         this.loading = true;
                     })
                     .catch((err) => {

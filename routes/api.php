@@ -8,6 +8,7 @@ use App\Http\Controllers\UnitInventoryController;
 use App\Http\Controllers\EventInventoryController;
 use App\Http\Controllers\EventBagsController;
 use App\Http\Controllers\TicketBagsController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,10 +24,12 @@ use App\Http\Controllers\TicketBagsController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
+Route::get('/get_every_users/{id}', [UserController::class, 'get_every_users']);
+Route::get('/get_all_users', [UserController::class, 'get_all_users']);
 
 Route::get('/get_all_units', [UnitsController::class, 'get_all_units']);
 Route::delete('/delete_unit/{id}', [UnitsController::class, 'delete_unit']);
+Route::get('/get_unit_and_events/{unitid}/{eventid}', [UnitsController::class, 'get_unit_and_events']);
 
 Route::get('/get_events_in_unit/{id}', [EventsController::class, 'get_events_in_unit']);
 Route::delete('/delete_event/{id}', [EventsController::class, 'delete_event']);

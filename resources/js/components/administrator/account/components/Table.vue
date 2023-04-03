@@ -37,9 +37,9 @@
                         </td>
                         <td>
                             {{
-                                i.unit_name === "" || i.unit_name === null
+                                i.unitname === "" || i.unitname === null
                                     ? "NAMID"
-                                    : i.unit_name
+                                    : i.unitname
                             }}
                         </td>
                         <td>{{ i.email }}</td>
@@ -85,6 +85,14 @@ export default {
     mounted() {
         this.mount();
     },
+    created() {
+        this.$watch(
+            () => this.$route.params,
+            (toParams, previousParams) => {
+                this.mount();
+            }
+        );
+    },
     methods: {
         deleteAccount(id) {
             this.$swal({
@@ -97,19 +105,15 @@ export default {
                 confirmButtonText: "Yes, delete it!",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axios
-                        .post("/delete_user", {
-                            id: id,
-                        })
-                        .then((res) => {
-                            this.$swal({
-                                icon: "success",
-                                title: "User has been deleted.",
-                                showConfirmButton: false,
-                                timer: 1500,
-                            });
-                            this.mount();
+                    axios.delete("/delete_user/" + id).then((res) => {
+                        this.$swal({
+                            icon: "success",
+                            title: "User has been deleted.",
+                            showConfirmButton: false,
+                            timer: 1500,
                         });
+                        this.mount();
+                    });
                 }
             });
         },
@@ -145,13 +149,6 @@ export default {
             axios
                 .get("/api/get_all_users")
                 .then((res) => {
-                    let urls = ["/api/get_all_users"];
-
-                    caches.open("static_cache").then((cache) => {
-                        cache.addAll(urls).then(() => {
-                            console.log("Data cached ");
-                        });
-                    });
                     this.getData = res.data.status;
                     this.getData2 = res.data.status;
                     this.load = false;

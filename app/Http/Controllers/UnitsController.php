@@ -4,9 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Units;
+use App\Models\Events;
 class UnitsController extends Controller
 {
 
+        public function get_unit_and_events($unitid,$eventid){
+           $units = Units::where('id',$unitid)->first();
+           $events = Events::where('id',$eventid)->first();
+            return response()->json([
+                'unit' => $units,
+                'event' => $events
+                ]);
+        }
         public function edit_unit(Request $request){
               Units::where('id',$request->id)
                     ->update(

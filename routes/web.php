@@ -37,7 +37,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
+Route::post('/add_user_account', [UserController::class, 'add_user_account']);
+Route::put('/edit_every_user', [UserController::class, 'edit_every_user']);
+Route::delete('/delete_user/{id}', [UserController::class, 'delete_user']);
+Route::post('/edit_access_user', [UserController::class, 'edit_access_user']);
 Route::post('/ee_login_users', [UserController::class, 'ee_login_users']);
 Route::post('/ee_user_logout', [UserController::class, 'ee_user_logout']);
 

@@ -459,76 +459,6 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <!-- <tr>
-                                    <td class="field" style="width: 90%">
-                                        12. Allow to edit a seller.
-                                    </td>
-                                    <td>
-                                        <div class="form-check form-switch">
-                                            <input
-                                                class="form-check-input"
-                                                type="checkbox"
-                                                @click="
-                                                    clickMe(
-                                                        data.access12,
-                                                        12,
-                                                        data.id
-                                                    )
-                                                "
-                                                id="flexSwitchCheckDefault"
-                                                :checked="
-                                                    data.access12 === 'On'
-                                                        ? true
-                                                        : false
-                                                "
-                                            />
-                                            <label
-                                                class="form-check-label"
-                                                for="flexSwitchCheckDefault"
-                                                >{{
-                                                    data.access12 === "On"
-                                                        ? "On"
-                                                        : "Off"
-                                                }}</label
-                                            >
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="field" style="width: 90%">
-                                        13. Allow to show the ticket history
-                                    </td>
-                                    <td>
-                                        <div class="form-check form-switch">
-                                            <input
-                                                class="form-check-input"
-                                                type="checkbox"
-                                                @click="
-                                                    clickMe(
-                                                        data.access13,
-                                                        13,
-                                                        data.id
-                                                    )
-                                                "
-                                                id="flexSwitchCheckDefault"
-                                                :checked="
-                                                    data.access13 === 'On'
-                                                        ? true
-                                                        : false
-                                                "
-                                            />
-                                            <label
-                                                class="form-check-label"
-                                                for="flexSwitchCheckDefault"
-                                                >{{
-                                                    data.access13 === "On"
-                                                        ? "On"
-                                                        : "Off"
-                                                }}</label
-                                            >
-                                        </div>
-                                    </td>
-                                </tr> -->
                             </tbody>
                         </table>
                         <br />
@@ -677,15 +607,7 @@ export default {
                     this.data = res.data.status;
                     this.id = res.data.status.id;
                 })
-                .then((res) => {
-                    let urls = ["/api/get_every_users/" + this.editId];
-
-                    caches.open("static_cache").then((cache) => {
-                        cache.addAll(urls).then(() => {
-                            console.log("Data cached ");
-                        });
-                    });
-                });
+                .then((res) => {});
         },
         async validate() {
             const { valid } = await this.$refs.form.validate();

@@ -127,9 +127,7 @@ export default {
         axios
             .get("/api/get_all_units")
             .then((res) => {
-                this.unitItem = res.data.status.map(
-                    (a) => a.ee_client_unit_name
-                );
+                this.unitItem = res.data.status.map((a) => a.units_name);
             })
             .catch((err) => {});
     },
@@ -144,22 +142,14 @@ export default {
                     this.jobPosition = res.data.status.usertype;
                     this.unitName = res.data.status.unit_name;
                 })
-                .then((res) => {
-                    let urls = ["/api/get_every_users/" + this.editId];
-
-                    caches.open("static_cache").then((cache) => {
-                        cache.addAll(urls).then(() => {
-                            console.log("Data cached ");
-                        });
-                    });
-                });
+                .then((res) => {});
         },
         async validate() {
             const { valid } = await this.$refs.form.validate();
             if (valid) {
                 this.loading = true;
                 axios
-                    .post("/edit_every_user", {
+                    .put("/edit_every_user", {
                         id: this.editId,
                         name: this.fullName,
                         email: this.username,
@@ -168,6 +158,7 @@ export default {
                         password: this.password,
                     })
                     .then((res) => {
+                        this.dialog = false;
                         this.$swal({
                             icon: "success",
                             title: "Your work has been saved",
@@ -175,7 +166,7 @@ export default {
                             timer: 1500,
                         });
                         this.$router.push({
-                            path: "/administrator/accounts/loading",
+                            hash: "#" + Math.floor(Math.random() * 999999),
                         });
                         this.loading = false;
                     })
