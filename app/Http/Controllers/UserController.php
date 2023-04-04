@@ -116,7 +116,7 @@ class UserController extends Controller
         if($request->password === '' || $request->password === null || $request->password === ' '){
             User::where('id','=',$request->id)
             ->update([
-             'unitid' => $request->job === 'Administrator'?1:$user->client_id,
+             'unitid' => $request->job === 'Administrator'?1:$user->id,
              'name' => $request->name,
              'email' => $request->email,
              'usertype' => $request->job,
@@ -125,7 +125,7 @@ class UserController extends Controller
         }else{
             User::where('id','=',$request->id)
             ->update([
-             'unitid' => $request->job === 'Administrator'?1:$user->client_id,
+             'unitid' => $request->job === 'Administrator'?1:$user->id,
              'name' => $request->name,
              'email' => $request->email,
              'usertype' => $request->job,

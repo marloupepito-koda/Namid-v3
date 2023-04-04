@@ -7,13 +7,11 @@ import Auth from "./../auth/Page.vue";
 
 import AdminLayoutVue from "./../administrator/Page.vue";
 import DashboardPage from "./../administrator/dashboard/Page.vue";
-import Loading from "./../administrator/dashboard/components/Loading.vue";
 
 import UnitPage from "./../administrator/dashboard/unit/Page.vue";
 import UnitSectionUnitEventListPage from "./../administrator/dashboard/unit/section/unit_event_list/Page.vue";
 import UnitSectionUnitTicketInventoryPage from "./../administrator/dashboard/unit/section/unit_ticket_inventory/Page.vue";
 import UnitSectionUnitReturnedBagPage from "./../administrator/dashboard/unit/section/unit_return_bag/Page.vue";
-import UnitLoading from "./../administrator/dashboard/unit/components/Loading.vue";
 import UnitTicketsTable from "./../administrator/dashboard/unit/section/unit_ticket_inventory/components/Table.vue";
 import UnitEventSection from "./../administrator/dashboard/unit/section/unit_ticket_inventory/components/sections/Event.vue";
 import UnitBagSection from "./../administrator/dashboard/unit/section/unit_ticket_inventory/components/sections/Bags.vue";
@@ -28,12 +26,10 @@ import ReturnedBagsPage from "./../administrator/dashboard/event/return/Page.vue
 import ReturnedBagsTable from "./../administrator/dashboard/event/return/components/Table.vue";
 import ReturnedAllTickets from "./../administrator/dashboard/event/return/components/AllTickets.vue";
 import EventHistory from "./../administrator/dashboard/event/event_history/Page.vue";
-import EventLoading from "./../administrator/dashboard/event/components/Loading.vue";
 
 import DailySellerBreakdown from "./../administrator/dashboard/event/daily_breakdown/Page.vue";
 
 import EventLogs from "./../administrator/dashboard/event/logs/Page.vue";
-
 import EventAllBags from "./../administrator/dashboard/event/event_bags/sections/all/Page.vue";
 import EventActiveBags from "./../administrator/dashboard/event/event_bags/sections/active/Page.vue";
 import EventNotActiveBags from "./../administrator/dashboard/event/event_bags/sections/not_active/Page.vue";
@@ -44,55 +40,48 @@ import TicketsInsideBagAllOffline from "./../administrator/dashboard/event/insid
 import TicketsInsideBagAllOffline2 from "./../administrator/dashboard/event/inside_bag/sections/all_tickets/components/Offline2.vue";
 import TicketsInsideBagSold from "./../administrator/dashboard/event/inside_bag/sections/sold_tickets/Page.vue";
 import TicketsInsideBagUnsold from "./../administrator/dashboard/event/inside_bag/sections/unsold_tickets/Page.vue";
-import InsideLoading from "./../administrator/dashboard/event/inside_bag/components/Loading.vue";
-
-import SettlementLoading from "./../administrator/settlement/components/Loading.vue";
-import AccountLoading from "./../administrator/account/components/Loading.vue";
 
 import AccountPage from "./../administrator/account/Page.vue";
 import SettlementPage from "./../administrator/settlement/Page.vue";
 import TransactionPage from "./../administrator/transaction/Page.vue";
 
-import BranchUnitPage from "./../units/unit/Page.vue";
-import BranchUnitSectionUnitEventListPage from "./../units/unit/section/unit_event_list/Page.vue";
-import BranchUnitSectionUnitTicketInventoryPage from "./../units/unit/section/unit_ticket_inventory/Page.vue";
-import UnitTicketsTableBranch from "./../units/unit/section/unit_ticket_inventory/components/Table.vue";
-import UnitEventSectionBranch from "./../units/unit/section/unit_ticket_inventory/components/sections/Event.vue";
-import UnitBagSectionBranch from "./../units/unit/section/unit_ticket_inventory/components/sections/Bags.vue";
-import BranchUnitSectionUnitReturnedBagPage from "./../units/unit/section/unit_return_bag/Page.vue";
-import BranchUnitLoading from "./../units/unit/components/Loading.vue";
+import ClientUnits from "./../client/unit/Page.vue";
+import ClientUnitsEventList from "./../client/unit/section/unit_event_list/Page.vue";
+import ClientUnitsTicketInventory from "./../client/unit/section/unit_ticket_inventory/Page.vue";
+import ClientUnitTicketsTable from "./../client/unit/section/unit_ticket_inventory/components/Table.vue";
+import ClientUnitEventSection from "./../client/unit/section/unit_ticket_inventory/components/sections/Event.vue";
+import ClientUnitBagSection from "./../client/unit/section/unit_ticket_inventory/components/sections/Bags.vue";
 
-import BranchPage from "./../units/Page.vue";
-import BranchEventPage from "./../units/event/Page.vue";
-import BranchEventInventoryPage from "./../units/event/event_inventory/Page.vue";
-import BranchOfflineEventInventoryPage from "./../units/event/event_inventory/sections/Offline.vue";
-import BranchShowBags from "./../units/event/event_inventory/sections/Bags.vue";
-import BranchEventBags from "./../units/event/event_bags/Page.vue";
-import BranchEventSellers from "./../units/event/event_sellers/Page.vue";
-import BranchEventHistory from "./../units/event/event_history/Page.vue";
-import BranchEventLoading from "./../units/event/components/Loading.vue";
-import BranchReturnedBagsPage from "./../units/event/return/Page.vue";
-import BranchReturnedBagsTable from "./../units/event/return/components/Table.vue";
-import BranchReturnedAllTickets from "./../units/event/return/components/AllTickets.vue";
+import ClientEventPage from "./../client/event/Page.vue";
+import ClientEventInventoryPage from "./../client/event/event_inventory/Page.vue";
+import ClientOfflineEventInventoryPage from "./../client/event/event_inventory/sections/Offline.vue";
+import ClientShowBags from "./../client/event/event_inventory/sections/Bags.vue";
+import ClientEventBags from "./../client/event/event_bags/Page.vue";
+import ClientEventSellers from "./../client/event/event_sellers/Page.vue";
+import ClientReturnedBagsPage from "./../client/event/return/Page.vue";
+import ClientReturnedBagsTable from "./../client/event/return/components/Table.vue";
+import ClientReturnedAllTickets from "./../client/event/return/components/AllTickets.vue";
+import ClientEventHistory from "./../client/event/event_history/Page.vue";
 
-import BranchEventAllBags from "./../units/event/event_bags/sections/all/Page.vue";
-import BranchEventActiveBags from "./../units/event/event_bags/sections/active/Page.vue";
-import BranchEventNotActiveBags from "./../units/event/event_bags/sections/not_active/Page.vue";
+import ClientDailySellerBreakdown from "./../client/event/daily_breakdown/Page.vue";
 
-import BranchTicketsInsideBag from "./../units/event/inside_bag/Page.vue";
-import BranchTicketsInsideBagAll from "./../units/event/inside_bag/sections/all_tickets/Page.vue";
-import BranchTicketsInsideBagAllOffline from "./../units/event/inside_bag/sections/all_tickets/components/Offline.vue";
-import BranchTicketsInsideBagAllOffline2 from "./../units/event/inside_bag/sections/all_tickets/components/Offline2.vue";
-import BranchTicketsInsideBagSold from "./../units/event/inside_bag/sections/sold_tickets/Page.vue";
-import BranchTicketsInsideBagUnsold from "./../units/event/inside_bag/sections/unsold_tickets/Page.vue";
-import BranchInsideLoading from "./../units/event/inside_bag/components/Loading.vue";
+import ClientEventLogs from "./../client/event/logs/Page.vue";
+import ClientEventAllBags from "./../client/event/event_bags/sections/all/Page.vue";
+import ClientEventActiveBags from "./../client/event/event_bags/sections/active/Page.vue";
+import ClientEventNotActiveBags from "./../client/event/event_bags/sections/not_active/Page.vue";
+
+import ClientTicketsInsideBag from "./../client/event/inside_bag/Page.vue";
+import ClientTicketsInsideBagAll from "./../client/event/inside_bag/sections/all_tickets/Page.vue";
+import ClientTicketsInsideBagAllOffline from "./../client/event/inside_bag/sections/all_tickets/components/Offline.vue";
+import ClientTicketsInsideBagAllOffline2 from "./../client/event/inside_bag/sections/all_tickets/components/Offline2.vue";
+import ClientTicketsInsideBagSold from "./../client/event/inside_bag/sections/sold_tickets/Page.vue";
+import ClientTicketsInsideBagUnsold from "./../client/event/inside_bag/sections/unsold_tickets/Page.vue";
 
 const routes = [
     { path: "/:catchAll(.*)", component: Error404 },
     { path: "/", component: Homepage },
     // { path: "/about", component: About },
     { path: "/auth", component: Auth },
-    { path: "/administrator/loading", component: Loading },
     { path: "/administrator/logout", component: Logout },
     {
         path: "/administrator/dashboard",
@@ -101,15 +90,8 @@ const routes = [
             { path: "/administrator/dashboard", component: DashboardPage },
             { path: "/administrator/transaction", component: TransactionPage },
             { path: "/administrator/settlement", component: SettlementPage },
-            {
-                path: "/administrator/settlement/loading",
-                component: SettlementLoading,
-            },
             { path: "/administrator/accounts", component: AccountPage },
-            {
-                path: "/administrator/accounts/loading",
-                component: AccountLoading,
-            },
+
             {
                 path: "/administrator/dashboard",
                 component: UnitPage,
@@ -139,10 +121,6 @@ const routes = [
                     {
                         path: "/administrator/dashboard/:id/unit_returned_bag",
                         component: UnitSectionUnitReturnedBagPage,
-                    },
-                    {
-                        path: "/administrator/dashboard/:id/loading",
-                        component: UnitLoading,
                     },
                 ],
             },
@@ -201,10 +179,6 @@ const routes = [
                                 path: "/administrator/dashboard/:id/:id/event_bags/inside_bag/unsold_tickets/:id",
                                 component: TicketsInsideBagUnsold,
                             },
-                            {
-                                path: "/administrator/dashboard/:id/:id/event_bags/inside_bag/loading/:id",
-                                component: InsideLoading,
-                            },
                         ],
                     },
                     {
@@ -241,158 +215,128 @@ const routes = [
                         path: "/administrator/dashboard/:id/:id/event_history",
                         component: EventHistory,
                     },
+                ],
+            },
+        ],
+    },
+    {
+        path: "/client/branch",
+        component: ClientUnits,
+        children: [
+            {
+                path: "/client/branch/:id/event_list",
+                component: ClientUnitsEventList,
+            },
+            {
+                path: "/client/branch/:id/unit_ticket_inventory",
+                component: ClientUnitsTicketInventory,
+                children: [
                     {
-                        path: "/administrator/dashboard/:id/:id/loading",
-                        component: EventLoading,
+                        path: "/client/branch/:id/unit_ticket_inventory",
+                        component: ClientUnitTicketsTable,
+                    },
+                    {
+                        path: "/client/branch/:id/unit_ticket_inventory/events",
+                        component: ClientUnitEventSection,
+                    },
+                    {
+                        path: "/client/branch/:id/unit_ticket_inventory/bags",
+                        component: ClientUnitBagSection,
                     },
                 ],
             },
         ],
     },
     {
-        path: "/unit/branch/logout",
-        component: Logout,
-    },
-    {
-        path: "/unit",
-        component: BranchPage,
+        path: "/client/branch/:id/:id",
+        component: ClientEventPage,
         children: [
             {
-                path: "/unit/branch",
-                component: BranchUnitPage,
+                path: "/client/branch/:id/:id/logs",
+                component: ClientEventLogs,
+            },
+            {
+                path: "/client/branch/:id/:id/event_inventory",
+                component: ClientEventInventoryPage,
+            },
+            {
+                path: "/client/branch/:id/:id/event_inventory/offline",
+                component: ClientOfflineEventInventoryPage,
+            },
+            {
+                path: "/client/branch/:id/:id/show_bags",
+                component: ClientShowBags,
+            },
+            {
+                path: "/client/branch/:id/:id/event_bags",
+                component: ClientEventBags,
                 children: [
                     {
-                        path: "/unit/branch/:id/:id/event_list",
-                        component: BranchUnitSectionUnitEventListPage,
-                    },
-                    // {
-                    //     path: "/unit/branch/:id/:id/unit_ticket_inventory",
-                    //     component: BranchUnitSectionUnitTicketInventoryPage,
-                    // },
-
-                    {
-                        path: "/unit/branch/:id/:id/unit_ticket_inventory",
-                        component: BranchUnitSectionUnitTicketInventoryPage,
-                        children: [
-                            {
-                                path: "/unit/branch/:id/:id/unit_ticket_inventory",
-                                component: UnitTicketsTableBranch,
-                            },
-                            {
-                                path: "/unit/branch/:id/:id/unit_ticket_inventory/events",
-                                component: UnitEventSectionBranch,
-                            },
-                            {
-                                path: "/unit/branch/:id/:id/unit_ticket_inventory/bags",
-                                component: UnitBagSectionBranch,
-                            },
-                        ],
+                        path: "/client/branch/:id/:id/event_bags/all_bags",
+                        component: ClientEventAllBags,
                     },
                     {
-                        path: "/unit/branch/:id/:id/unit_returned_bag",
-                        component: BranchUnitSectionUnitReturnedBagPage,
+                        path: "/client/branch/:id/:id/event_bags/active_bags",
+                        component: ClientEventActiveBags,
                     },
                     {
-                        path: "/unit/branch/:id/:id/loading",
-                        component: BranchUnitLoading,
+                        path: "/client/branch/:id/:id/event_bags/not_active_bags",
+                        component: ClientEventNotActiveBags,
                     },
                 ],
             },
             {
-                path: "/unit/branch/:id/:id/:id",
-                component: BranchEventPage,
+                path: "/client/branch/:id/:id/event_bags/inside_bag",
+                component: ClientTicketsInsideBag,
                 children: [
                     {
-                        path: "/unit/branch/:id/:id/:id/logs",
-                        component: EventLogs,
+                        path: "/client/branch/:id/:id/event_bags/inside_bag/all_tickets/:id",
+                        component: ClientTicketsInsideBagAll,
+                    },
+
+                    {
+                        path: "/client/branch/:id/:id/event_bags/inside_bag/sold_tickets/:id",
+                        component: ClientTicketsInsideBagSold,
                     },
                     {
-                        path: "/unit/branch/:id/:id/:id/event_inventory",
-                        component: BranchEventInventoryPage,
-                    },
-                    {
-                        path: "/unit/branch/:id/:id/:id/event_inventory/offline",
-                        component: BranchOfflineEventInventoryPage,
-                    },
-                    {
-                        path: "/unit/branch/:id/:id/:id/show_bags",
-                        component: BranchShowBags,
-                    },
-                    {
-                        path: "/unit/branch/:id/:id/:id/event_bags",
-                        component: BranchEventBags,
-                        children: [
-                            {
-                                path: "/unit/branch/:id/:id/:id/event_bags/all_bags",
-                                component: BranchEventAllBags,
-                            },
-                            {
-                                path: "/unit/branch/:id/:id/:id/event_bags/active_bags",
-                                component: BranchEventActiveBags,
-                            },
-                            {
-                                path: "/unit/branch/:id/:id/:id/event_bags/not_active_bags",
-                                component: BranchEventNotActiveBags,
-                            },
-                        ],
-                    },
-                    {
-                        path: "/unit/branch/:id/:id/:id/event_bags/inside_bag",
-                        component: BranchTicketsInsideBag,
-                        children: [
-                            {
-                                path: "/unit/branch/:id/:id/:id/event_bags/inside_bag/all_tickets",
-                                component: BranchTicketsInsideBagAll,
-                            },
-                            {
-                                path: "/unit/branch/:id/:id/:id/event_bags/inside_bag/sold_tickets",
-                                component: BranchTicketsInsideBagSold,
-                            },
-                            {
-                                path: "/unit/branch/:id/:id/:id/event_bags/inside_bag/unsold_tickets",
-                                component: BranchTicketsInsideBagUnsold,
-                            },
-                        ],
-                    },
-                    {
-                        path: "/unit/branch/:id/:id/:id/event_bags/inside_bag/loading",
-                        component: BranchInsideLoading,
-                    },
-                    {
-                        path: "/unit/branch/:id/:id/:id/event_bags/inside_bag/all_tickets/offline",
-                        component: BranchTicketsInsideBagAllOffline,
-                    },
-                    {
-                        path: "/unit/branch/:id/:id/:id/event_bags/inside_bag/all_tickets/offline2",
-                        component: BranchTicketsInsideBagAllOffline2,
-                    },
-                    {
-                        path: "/unit/branch/:id/:id/:id/event_sellers",
-                        component: BranchEventSellers,
-                    },
-                    {
-                        path: "/unit/branch/:id/:id/:id/returned_bags",
-                        component: BranchReturnedBagsPage,
-                        children: [
-                            {
-                                path: "/unit/branch/:id/:id/:id/returned_bags",
-                                component: BranchReturnedBagsTable,
-                            },
-                            {
-                                path: "/unit/branch/:id/:id/:id/returned_bags/inside_bag/all_tickets",
-                                component: BranchReturnedAllTickets,
-                            },
-                        ],
-                    },
-                    {
-                        path: "/unit/branch/:id/:id/:id/event_history",
-                        component: BranchEventHistory,
-                    },
-                    {
-                        path: "/unit/branch/:id/:id/:id/loading",
-                        component: BranchEventLoading,
+                        path: "/client/branch/:id/:id/event_bags/inside_bag/unsold_tickets/:id",
+                        component: ClientTicketsInsideBagUnsold,
                     },
                 ],
+            },
+            {
+                path: "/client/branch/:id/:id/event_bags/inside_bag/all_tickets/offline",
+                component: ClientTicketsInsideBagAllOffline,
+            },
+            {
+                path: "/client/branch/:id/:id/event_bags/inside_bag/all_tickets/offline2",
+                component: ClientTicketsInsideBagAllOffline2,
+            },
+            {
+                path: "/client/branch/:id/:id/event_sellers",
+                component: ClientEventSellers,
+            },
+            {
+                path: "/client/branch/:id/:id/returned_bags",
+                component: ClientReturnedBagsPage,
+                children: [
+                    {
+                        path: "/client/branch/:id/:id/returned_bags",
+                        component: ClientReturnedBagsTable,
+                    },
+                    {
+                        path: "/client/branch/:id/:id/returned_bags/inside_bag/all_tickets",
+                        component: ClientReturnedAllTickets,
+                    },
+                ],
+            },
+            {
+                path: "/client/branch/:id/:id/daily_breakdown",
+                component: ClientDailySellerBreakdown,
+            },
+            {
+                path: "/client/branch/:id/:id/event_history",
+                component: ClientEventHistory,
             },
         ],
     },

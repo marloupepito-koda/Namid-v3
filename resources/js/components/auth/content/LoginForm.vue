@@ -93,13 +93,8 @@ export default {
                                         this.loading = false;
                                         this.$router.push({
                                             path:
-                                                "/unit/branch/" +
-                                                res.data.unit_id +
-                                                "/" +
-                                                res.data.unit_name.replace(
-                                                    / /g,
-                                                    "_"
-                                                ) +
+                                                "/client/branch/" +
+                                                res.data.unitid +
                                                 "/event_list",
                                         });
                                         localStorage.setItem(
@@ -134,6 +129,12 @@ export default {
                         this.messageAlert =
                             err.response.data.message.charAt(0).toUpperCase() +
                             err.response.data.message.slice(1);
+                        this.$swal({
+                            icon: "error",
+                            title: this.messageAlert,
+                            showConfirmButton: false,
+                            timer: 1500,
+                        });
                     });
             } else {
                 this.loading = false;
