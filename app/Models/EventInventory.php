@@ -12,6 +12,7 @@ class EventInventory extends Model
     protected $fillable = [
         'unitid',
         'eventid',
+        'ticketid',
         'ticket_type',
         'ticket_name',
         'price',
@@ -22,6 +23,10 @@ class EventInventory extends Model
         'end',
         'remaining',
         'date',
-        'status'
+        'status',
+        'numbered',
+        'iatp',
+        'tt',
+        'pop',
     ];
 }

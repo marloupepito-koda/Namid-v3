@@ -181,7 +181,6 @@ export default {
         mount() {
             this.unitId = this.$route.path.split("/")[3];
             this.eventId = this.$route.path.split("/")[4];
-
             axios
                 .get(
                     "/api/get_ticket_inventory/" +
@@ -193,6 +192,11 @@ export default {
                     this.getData = Object.values(res.data.status);
                     this.getData2 = Object.values(res.data.status);
                     this.load = false;
+                    const search =
+                        this.$route.query.ticketid === undefined
+                            ? ""
+                            : this.$route.query.ticketid;
+                    this.searchData(search);
                 });
         },
         searchData(e) {

@@ -23,12 +23,12 @@
                                     </option>
                                     <option
                                         v-for="i in itemsList"
-                                        :value="[i.id, i.ticket_name]"
+                                        :value="[i.id, i.ticket_type]"
                                         :class="
                                             i.status === '0' ? 'd-none' : ''
                                         "
                                     >
-                                        {{ i.ticket_name }}
+                                        {{ i.ticket_type }}
                                     </option>
                                 </select>
                             </div>
@@ -71,6 +71,11 @@
                             </v-btn>
 
                             <v-btn
+                                :disabled="
+                                    parseInt(start) > parseInt(end) ||
+                                    parseInt(end) > parseInt(end2) ||
+                                    parseInt(start) < parseInt(start2)
+                                "
                                 color="black"
                                 :loading="loading"
                                 @click="validate"
@@ -107,25 +112,41 @@ export default {
         itemsList: [],
         count: "",
         sellers: "",
+        start2: "",
+        end2: "",
     }),
+    created() {
+        this.$watch(
+            () => this.$route.params,
+            (toParams, previousParams) => {
+                this.mount();
+            }
+        );
+    },
     mounted() {
-        this.unitId = this.$route.path.split("/")[3];
-        this.eventId = this.$route.path.split("/")[4];
-        this.bagId = this.$route.path.split("/")[8];
-
-        this.sellers =
-            this.$route.query.seller === null
-                ? "noseller"
-                : this.$route.query.seller;
-        axios
-            .get(
-                "/api/get_ticket_inventory/" + this.unitId + "/" + this.eventId
-            )
-            .then((res) => {
-                this.itemsList = res.data.status;
-            });
+        this.mount();
     },
     methods: {
+        mount() {
+            this.unitId = this.$route.path.split("/")[3];
+            this.eventId = this.$route.path.split("/")[4];
+            this.bagId = this.$route.path.split("/")[8];
+
+            this.sellers =
+                this.$route.query.seller === null
+                    ? "noseller"
+                    : this.$route.query.seller;
+            axios
+                .get(
+                    "/api/get_ticket_inventory/" +
+                        this.unitId +
+                        "/" +
+                        this.eventId
+                )
+                .then((res) => {
+                    this.itemsList = res.data.status;
+                });
+        },
         async validate() {
             const { valid } = await this.$refs.form.validate();
             const data = {
@@ -152,7 +173,6 @@ export default {
                             path: this.$route.path,
                             hash: "#" + Math.floor(Math.random() * 999999),
                         });
-                     //   alert(res.data.status)
                         this.$swal({
                             icon: "success",
                             title: "Tickets added in a bag.",
@@ -168,6 +188,8 @@ export default {
             this.price = "";
             this.start = "";
             this.end = "";
+            this.start2 = "";
+            this.end2 = "";
         },
         searchTicket(e) {
             this.ticketId = e.target.value.split(",")[0];
@@ -179,6 +201,8 @@ export default {
                     this.ticket_name = res.data.status.ticket_name;
                     this.start = res.data.status.start;
                     this.end = res.data.status.end;
+                    this.start2 = res.data.status.start;
+                    this.end2 = res.data.status.end;
                     this.price = res.data.status.price;
                     this.count = res.data.status.count;
                 });

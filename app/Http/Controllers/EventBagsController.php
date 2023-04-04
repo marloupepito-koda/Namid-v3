@@ -43,11 +43,25 @@ class EventBagsController extends Controller
             );
         }
     public function get_event_bags($unitid,$eventid,$type){
-       $bags =  EventBags::where([['unitid','=',$unitid],['eventid','=',$eventid],['returned','=',null]])->get();
-
-        return response()->json([
+        if($type === 'all'){
+             $bags =  EventBags::where([['unitid','=',$unitid],['eventid','=',$eventid],['returned','=',null]])->get();
+             return response()->json([
                 'status' => $bags
                 ]);
+        }else if($type === 'active'){
+            $bags =  EventBags::where([['remaining','<>',null],['remaining','<>',0],['unitid','=',$unitid],['eventid','=',$eventid],['returned','=',null]])
+            ->get();
+             return response()->json([
+                'status' => $bags
+                ]);
+        }else{
+            $bags =  EventBags::where([['remaining','=',null],['unitid','=',$unitid],['eventid','=',$eventid],['returned','=',null]])
+            ->orWhere([['remaining','=',0],['unitid','=',$unitid],['eventid','=',$eventid],['returned','=',null]])->get();
+             return response()->json([
+                'status' => $bags
+                ]);
+        }
+       
     }
       public function create_bag(Request $request){
                 EventBags::create($request->validate([

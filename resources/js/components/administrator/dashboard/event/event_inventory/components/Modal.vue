@@ -91,7 +91,28 @@
                                     density="compact"
                                 ></v-text-field>
                             </div>
-                            <div class="col-md-12"></div>
+                            <div class="col-md-12">
+                                <v-checkbox
+                                    style="height: 30px !important"
+                                    v-model="numbered"
+                                    label="Numbered"
+                                ></v-checkbox>
+                                <v-checkbox
+                                    style="height: 30px !important"
+                                    v-model="iatp"
+                                    label="Include Average Ticket Price"
+                                ></v-checkbox>
+                                <v-checkbox
+                                    style="height: 30px !important"
+                                    v-model="tt"
+                                    label="Transfer Unused Tickets to Next Day"
+                                ></v-checkbox>
+                                <v-checkbox
+                                    style="height: 30px !important"
+                                    v-model="pop"
+                                    label="P.O.P"
+                                ></v-checkbox>
+                            </div>
                         </div>
 
                         <div style="position: absolute; bottom: 0; right: 0">
@@ -112,7 +133,8 @@
                                         :loading="loading"
                                         :disabled="
                                             parseInt(start) > parseInt(end) ||
-                                            parseInt(end) > parseInt(end2)
+                                            parseInt(end) > parseInt(end2) ||
+                                            parseInt(start) < parseInt(start2)
                                                 ? true
                                                 : false
                                         "
@@ -139,6 +161,10 @@ export default {
         this.mount();
     },
     data: () => ({
+        numbered: true,
+        iatp: true,
+        tt: true,
+        pop: false,
         loading: false,
         items: [],
         dialog: false,
@@ -150,6 +176,7 @@ export default {
         count: "",
         countRules: [(v) => !!v || "Count is required"],
         start: "",
+        start2: "",
         startRules: [(v) => !!v || "Starting # is required"],
         end: "",
         end2: "",
@@ -172,7 +199,9 @@ export default {
                     this.ticket_name = res.data.status.ticket_name;
                     this.count = res.data.status.count;
                     this.start = res.data.status.start;
+                    this.start2 = res.data.status.start;
                     this.end = res.data.status.end;
+                    this.end2 = res.data.status.end;
                     this.loading = false;
                 })
                 .catch((err) => {
@@ -207,6 +236,10 @@ export default {
                 end: this.end,
                 price: this.price,
                 date: moment().format("LLL"),
+                numbered: this.numbered,
+                iatp: this.iatp,
+                tt: this.tt,
+                pop: this.pop,
             };
 
             if (valid) {
@@ -219,6 +252,7 @@ export default {
                             hash: "#" + Math.floor(Math.random() * 999999),
                         });
                         this.mount();
+                        this.reset();
                         this.dialog = false;
                         this.loading = false;
                         this.$swal({
@@ -237,7 +271,7 @@ export default {
         reset() {
             this.dialog = false;
             this.loading = false;
-            //  this.$refs.form.reset();
+            this.$refs.form.reset();
         },
     },
 };

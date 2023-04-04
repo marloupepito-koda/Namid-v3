@@ -68,7 +68,10 @@
                                         class="ma-2"
                                         variant="outlined"
                                         color="blue"
-                                        @click="showTicketEvent(i.ee_ticket_id)"
+                                        :disabled="
+                                            i.status === null ? true : false
+                                        "
+                                        @click="showTicketEvent(i.id)"
                                     >
                                         <v-icon size="large">
                                             mdi-clipboard-text-clock-outline</v-icon
@@ -87,6 +90,7 @@
 <script>
 import ModalShow from "./ModalShow.vue";
 import Modal from "./Modal.vue";
+import axios from "axios";
 export default {
     components: {
         ModalShow,
@@ -105,16 +109,18 @@ export default {
     },
     methods: {
         showTicketEvent(id) {
-            this.$router.push({
-                path:
-                    "/administrator/dashboard/" +
-                    this.unitId +
-                    "/" +
-                    this.eventName.replace(/ /g, "_") +
-                    "/unit_ticket_inventory/events",
-                query: {
-                    ticketid: String(id),
-                },
+            axios.get("/api/search_ticket_where/" + id).then((res) => {
+                this.$router.push({
+                    path:
+                        "/administrator/dashboard/" +
+                        this.unitId +
+                        "/" +
+                        res.data.status.eventid +
+                        "/event_inventory",
+                    query: {
+                        ticketid: String(id),
+                    },
+                });
             });
         },
 
@@ -135,14 +141,13 @@ export default {
         },
         mount() {
             this.unitId = this.$route.path.split("/")[3];
-            this.eventName = this.$route.path.split("/")[4].replace(/_/g, " ");
+            this.eventId = this.$route.path.split("/")[4];
             axios
                 .get("/api/get_unit_ticket_inventory/" + this.unitId)
                 .then((res) => {
                     this.getData = res.data.status;
                     this.getData2 = res.data.status;
                     this.load = false;
-                    console.log(res.data.status);
                 });
         },
     },
@@ -154,6 +159,7 @@ export default {
             search: [],
             getData: [],
             getData2: [],
+            eventId: "",
         };
     },
 };

@@ -206,11 +206,22 @@ export default {
                         this.start = this.$route.query.start;
                         this.end = this.$route.query.end;
                         if (res.data.status.length !== 0) {
+                            const uniqueProducts = res.data.sold.filter(
+                                (obj, index, self) => {
+                                    return (
+                                        index ===
+                                        self.findIndex((t) => t.id === obj.id)
+                                    );
+                                }
+                            );
+
                             this.notify = "";
                             this.eventData = res.data.transaction;
-                            this.soldData = res.data.sold;
+                            this.soldData = uniqueProducts;
                             this.hideInvoice = true;
-                            const amount = res.data.sold
+
+                            console.log(uniqueProducts);
+                            const amount = uniqueProducts
                                 .map(
                                     (aa) =>
                                         parseFloat(aa.price) *
@@ -220,7 +231,7 @@ export default {
                                 )
                                 .reduce((partialSum, a) => partialSum + a, 0);
                             this.total = amount;
-                            const price = res.data.sold
+                            const price = uniqueProducts
                                 .map((aa) => parseFloat(aa.price))
                                 .reduce((partialSum, a) => partialSum + a, 0);
                             this.atp = parseFloat(

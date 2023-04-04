@@ -217,7 +217,7 @@ export default {
                         this.unitId +
                         "/" +
                         this.eventId +
-                        "/all"
+                        "/notactive"
                 )
                 .then((res) => {
                     this.getData = res.data.status;

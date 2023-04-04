@@ -1,9 +1,9 @@
 <template>
     <div class="row">
         <div class="col-md-4 offset-md-5">
-            <Search />
+            <!-- <Search /> -->
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 mb-5">
             <Modal />
         </div>
         <div class="col-md-12">

@@ -57,7 +57,9 @@
                                 @click="validate"
                                 :loading="loading"
                                 :disabled="
-                                    parseInt(endDefault) < parseInt(end)
+                                    parseInt(start) > parseInt(end) ||
+                                    parseInt(end) > parseInt(end2) ||
+                                    parseInt(start) < parseInt(start2)
                                         ? true
                                         : false
                                 "
@@ -86,9 +88,10 @@ export default {
         date: moment().format("LLL"),
         start: "",
         end: "",
+        start2: "",
+        end2: "",
         dialog: false,
         id: "",
-        endDefault: "",
         quantity: "",
     }),
     mounted() {
@@ -101,7 +104,8 @@ export default {
             this.dialog = true;
             this.start = this.datas.start;
             this.end = this.datas.end;
-            this.endDefault = this.datas.end;
+            this.start2 = this.datas.start;
+            this.end2 = this.datas.end;
             this.id = this.datas.id;
             this.quantity = this.datas.quantity;
         },

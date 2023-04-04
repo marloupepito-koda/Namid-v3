@@ -34,6 +34,7 @@ return new class extends Migration
             $table->id();
             $table->string('unitid')->nullable();
             $table->string('eventid')->nullable();
+            $table->string('ticketid')->nullable();
             $table->string('ticket_type')->nullable();
             $table->string('ticket_name')->nullable();
             $table->string('price')->nullable();
@@ -45,6 +46,10 @@ return new class extends Migration
             $table->string('remaining')->nullable();
             $table->string('status')->nullable();
             $table->string('date')->nullable();
+            $table->string('numbered')->nullable();
+            $table->string('iatp')->nullable();
+            $table->string('tt')->nullable();
+            $table->string('pop')->nullable();
             $table->timestamps();
         });
 
@@ -67,7 +72,6 @@ return new class extends Migration
          Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('unitid')->nullable();
-            //$table->foreign('unitid')->references('client_id')->on('ee_clients')->onUpdate('cascade')->onDelete('cascade');
             $table->string('events_name')->nullable();
             $table->string('events_address')->nullable();
             $table->string('start')->nullable();

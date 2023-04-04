@@ -7,6 +7,13 @@ use App\Models\EventInventory;
 use App\Models\UnitInventory;
 class EventInventoryController extends Controller
 {
+   
+   public function search_ticket_where($id){
+       $tickets= EventInventory::where('ticketid',$id)->first();
+         return response()->json([
+        'status' => $tickets
+        ]);
+   }
      public function get_each_ticket_in_event_inventory($id){
         $tickets= EventInventory::where('id',$id)->first();
          return response()->json([
@@ -123,6 +130,7 @@ class EventInventoryController extends Controller
          }
              EventInventory::create([
                     'unitid' => $ui->unitid,
+                    'ticketid' => $ui->id,
                     'eventid' =>$request->eventid,
                     'ticket_type' =>$ui->ticket_type,
                     'ticket_name' =>$ui->ticket_name,
@@ -133,7 +141,11 @@ class EventInventoryController extends Controller
                     'end' =>$request->end,
                     'date' =>$request->date,
                     'quantity' =>$quantity,
-                    'remaining' =>$quantity
+                    'remaining' =>$quantity,
+                    'numbered' =>$request->numbered,
+                    'iatp' =>$request->iatp,
+                    'tt' =>$request->tt,
+                    'pop' =>$request->pop
                 ]);
 
          return response()->json([

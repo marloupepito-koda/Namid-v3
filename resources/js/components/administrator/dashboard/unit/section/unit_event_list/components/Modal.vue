@@ -116,7 +116,6 @@ export default {
                         year: moment().format("L"),
                     })
                     .then((res) => {
-                        alert(moment(this.date[1]).format("L"));
                         if (res.data.status === "success") {
                             this.loading = false;
                             this.dialog = false;

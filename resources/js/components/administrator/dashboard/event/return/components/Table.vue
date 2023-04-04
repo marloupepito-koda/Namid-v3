@@ -23,11 +23,10 @@
                     <tr>
                         <th class="text-left">Bag Name</th>
                         <th class="text-left">Seller Name</th>
-                        <th class="text-left">Number of Tickets</th>
-                        <!-- <th class="text-left">Number of Seller</th> -->
                         <th class="text-left">Remaining Ticket in Bag</th>
                         <th class="text-left">Created At</th>
-                        <th class="text-left">Return</th>
+                        <th class="text-left">Returned At</th>
+                        <th class="text-left"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,10 +53,25 @@
                                 >No Designated Seller</v-chip
                             >
                         </td>
-                        <td>{{ i.n_o_t }}</td>
-                        <!-- <td>{{ i.n_o_s }}</td> -->
-                        <td>{{ i.remaining_ticket }}</td>
+                        <td>{{ i.remaining }}</td>
                         <td>{{ i.date }}</td>
+                        <!-- <td>{{ i.n_o_s }}</td> -->
+                        <td>
+                            {{
+                                new Date().getMonth(i.updated_at) +
+                                1 +
+                                "-" +
+                                new Date().getDate(i.updated_at) +
+                                "-" +
+                                new Date().getFullYear(i.updated_at) +
+                                " " +
+                                new Date().getHours(i.updated_at) +
+                                ":" +
+                                new Date().getMinutes(i.updated_at) +
+                                ":" +
+                                new Date().getSeconds(i.updated_at)
+                            }}
+                        </td>
                         <td>
                             <a
                                 href="javascript:;"
