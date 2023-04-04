@@ -9,13 +9,13 @@ class UnitInventoryController extends Controller
     
    
     public function get_each_ticket_in_unit($ticketid){
-        $tickets= UnitInventory::where('unitid',$ticketid)->first();
+        $tickets= UnitInventory::where('id',$ticketid)->first();
          return response()->json([
         'status' => $tickets
         ]);
     }
 public function get_unit_inventory($unitid,$eventid){
-        $tickets= UnitInventory::where([['unitid','=',$unitid],['unitid','=',$eventid]])->get();
+        $tickets= UnitInventory::where([['status','=',null],['unitid','=',$unitid]])->get();
          return response()->json([
         'status' => $tickets
         ]);

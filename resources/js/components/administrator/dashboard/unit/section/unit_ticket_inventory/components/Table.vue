@@ -31,6 +31,7 @@
                                 <th class="text-left">Quantity</th>
                                 <th class="text-left">Count</th>
                                 <th class="text-left">Bind</th>
+                                <th class="text-left">Status</th>
                                 <th class="text-left">Created At</th>
                                 <th class="text-center p-0">
                                     Ticket Transactions
@@ -46,6 +47,20 @@
                                 <td>{{ i.quantity }}</td>
                                 <td>{{ i.count }}</td>
                                 <td>{{ i.bind }}</td>
+                                <td>
+                                    <v-chip
+                                        size="small"
+                                        :color="
+                                            i.status === null ? 'red' : 'green'
+                                        "
+                                        text-color="white"
+                                        >{{
+                                            i.status === null
+                                                ? "Unused"
+                                                : i.status
+                                        }}</v-chip
+                                    >
+                                </td>
                                 <td>{{ i.date }}</td>
                                 <td>
                                     <v-btn

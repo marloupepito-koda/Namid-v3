@@ -18,6 +18,7 @@ class UnitInventory extends Model
         'quantity',
         'start',
         'end',
-        'date'
+        'date',
+        'status'
     ];
 }

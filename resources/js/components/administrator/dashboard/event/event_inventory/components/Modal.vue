@@ -215,6 +215,7 @@ export default {
                     .post("/add_ticket_in_event", data)
                     .then((res) => {
                         this.$router.push({
+                            path: this.$route.path,
                             hash: "#" + Math.floor(Math.random() * 999999),
                         });
                         this.mount();

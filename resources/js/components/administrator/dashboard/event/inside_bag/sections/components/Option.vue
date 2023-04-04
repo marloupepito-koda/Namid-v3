@@ -52,7 +52,6 @@
                             </div>
                             <div class="col-md-6">
                                 <v-text-field
-                                    disabled
                                     v-model="start"
                                     :rules="startRules"
                                     label="Starting #"
@@ -72,32 +71,7 @@
                                 ></v-text-field>
                             </div>
                         </div>
-                        <div v-if="bagName !== ''">
-                            <v-checkbox
-                                v-if="
-                                    parseInt(quantity) !==
-                                    parseInt(end) - parseInt(start) + 1
-                                "
-                                v-model="transfer"
-                                :label="
-                                    transfer === false
-                                        ? ticket_type +
-                                          ' ' +
-                                          start +
-                                          ' to ' +
-                                          end +
-                                          ' transfer to ' +
-                                          bagName
-                                        : ticket_type +
-                                          ' ' +
-                                          (parseInt(end) + 1) +
-                                          ' to ' +
-                                          endDefault +
-                                          ' transfer to ' +
-                                          bagName
-                                "
-                            ></v-checkbox>
-                        </div>
+
                         <div class="col-md-6 mt-5 offset-md-6 mb-3">
                             <v-btn color="error" class="mr-4" @click="reset">
                                 CANCEL

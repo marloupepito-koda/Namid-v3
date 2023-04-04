@@ -7,7 +7,9 @@
             large
             color="black"
             @click="openModal"
-            :disabled="datas.status === 'Sold' ? true : false"
+            :disabled="
+                datas.status === 'Sold' || datas.seller === null ? true : false
+            "
         >
             <v-icon large color="black"> mdi-account-cash-outline</v-icon>
         </v-btn>

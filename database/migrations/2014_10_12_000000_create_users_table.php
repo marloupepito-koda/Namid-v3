@@ -59,6 +59,7 @@ return new class extends Migration
             $table->string('start')->nullable();
             $table->string('end')->nullable();
             $table->string('date')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
         });
 
