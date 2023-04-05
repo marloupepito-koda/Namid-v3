@@ -49,9 +49,9 @@ export default {
                     this.loading = false;
                     this.$swal({
                         icon: "success",
-                        title: "Download Completed!",
+                        title: "Downloading Completed!",
                         showConfirmButton: false,
-                        timer: 1500,
+                        timer: 1000,
                     });
                 }
             });
@@ -107,58 +107,35 @@ export default {
                 )
             );
 
-            bag.map((a) =>
-                axios
-                    .get(
-                        "/api/get_event_bags/" +
-                            a.unitid +
-                            "/" +
-                            String(a.eventid) +
-                            "/all"
-                    )
-                    .then((aa) => {
-                        urls.push(
-                            ...aa.data.status.map(
-                                (bb) =>
-                                    "/api/get_tickets_in_bag/" +
-                                    bb.unitid +
-                                    "/" +
-                                    bb.eventid +
-                                    "/" +
-                                    String(bb.id) +
-                                    "/all"
-                            ),
-                            ...aa.data.status.map(
-                                (bb) =>
-                                    "/api/get_tickets_in_bag/" +
-                                    bb.unitid +
-                                    "/" +
-                                    bb.eventid +
-                                    "/" +
-                                    String(bb.id) +
-                                    "/sold"
-                            ),
-                            ...aa.data.status.map(
-                                (bb) =>
-                                    "/api/get_tickets_in_bag/" +
-                                    bb.unitid +
-                                    "/" +
-                                    bb.eventid +
-                                    "/" +
-                                    String(bb.id) +
-                                    "/unsold"
-                            )
-                        );
-                        const finish = caches
-                            .open("static_cache")
-                            .then((cache) => {
-                                cache.addAll(urls).then(() => {});
-                            });
-                        if (finish) {
-                            this.loadingSwalAlert(false);
-                        }
-                    })
+            bag.map((aaa) =>
+                urls.push(
+                    "/api/get_tickets_in_bag/" +
+                        aaa.unitid +
+                        "/" +
+                        aaa.eventid +
+                        "/" +
+                        String(aaa.id) +
+                        "/all",
+                    "/api/get_tickets_in_bag/" +
+                        aaa.unitid +
+                        "/" +
+                        aaa.eventid +
+                        "/" +
+                        String(aaa.id) +
+                        "/sold",
+                    "/api/get_tickets_in_bag/" +
+                        aaa.unitid +
+                        "/" +
+                        aaa.eventid +
+                        "/" +
+                        String(aaa.id) +
+                        "/unsold"
+                )
             );
+            caches.open("static_cache").then((cache) => {
+                cache.addAll(urls).then(() => {});
+            });
+            this.loadingSwalAlert(false);
         },
         webpages() {
             this.loading = true;
@@ -234,9 +211,9 @@ export default {
                     axios
                         .get(
                             "/api/get_event_bags/" +
-                                aa.unitid +
+                                String(aa.unitid) +
                                 "/" +
-                                aa.id +
+                                String(aa.id) +
                                 "/all"
                         )
                         .then((aaa) => {
@@ -248,11 +225,33 @@ export default {
                                         "/" +
                                         b.eventid +
                                         "/event_bags/inside_bag/all_tickets/" +
-                                        b.id
+                                        String(b.id)
+                                )
+                            );
+                        })
+                );
+
+                res.data.status.map((aaa) =>
+                    axios
+                        .get(
+                            "/api/get_ticket_inventory/" +
+                                aaa.unitid +
+                                "/" +
+                                aaa.eventid
+                        )
+                        .then((response) => {
+                            urls.push(
+                                ...response.data.status.map(
+                                    (bbb) =>
+                                        "/api/get_each_ticket_in_event_inventory/" +
+                                        String(bbb.id)
                                 )
                             );
 
-                            this.getRestAPI(res.data.status, aaa.data.status);
+                            this.getRestAPI(
+                                res.data.status,
+                                response.data.status
+                            );
                         })
                 );
                 caches.open("static_cache").then((cache) => {

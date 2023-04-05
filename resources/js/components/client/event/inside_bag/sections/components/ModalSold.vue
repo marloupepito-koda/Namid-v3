@@ -120,19 +120,51 @@ export default {
                 quantity: this.quantity,
             };
             if (valid) {
-                axios.post("/create_ticket_sold", data).then((res) => {
-                    this.dialog = false;
-                    this.$router.push({
-                        path: this.$route.path,
-                        hash: "#" + Math.floor(Math.random() * 999999),
-                    });
+                if (localStorage.getItem("internet") === "offline") {
+                    const form =
+                        JSON.parse(
+                            localStorage.getItem(
+                                "create_ticket_sold" +
+                                    this.unitId +
+                                    this.eventId
+                            )
+                        ) === null
+                            ? []
+                            : JSON.parse(
+                                  localStorage.getItem(
+                                      "create_ticket_sold" +
+                                          this.unitId +
+                                          this.eventId
+                                  )
+                              );
+
+                    form.push(data);
+                    localStorage.setItem(
+                        "create_ticket_sold" + this.unitId + this.eventId,
+                        JSON.stringify(form)
+                    );
+
                     this.$swal({
                         icon: "success",
-                        title: "Added Ticket Sold",
+                        title: "Ticket Added Sold",
                         showConfirmButton: false,
                         timer: 1000,
                     });
-                });
+                } else {
+                    axios.post("/create_ticket_sold", data).then((res) => {
+                        this.dialog = false;
+                        this.$router.push({
+                            path: this.$route.path,
+                            hash: "#" + Math.floor(Math.random() * 999999),
+                        });
+                        this.$swal({
+                            icon: "success",
+                            title: "Added Ticket Sold",
+                            showConfirmButton: false,
+                            timer: 1000,
+                        });
+                    });
+                }
             }
         },
         reset() {
