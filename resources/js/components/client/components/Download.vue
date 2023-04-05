@@ -1,5 +1,5 @@
 <template>
-    <v-btn icon>
+    <v-btn icon @click="webpages()" :loading="loading">
         <v-tooltip
             text="Click to Download"
             activator="parent"
@@ -16,6 +16,7 @@ export default {
         return {
             unitId: "",
             eventId: "",
+            loading: false,
         };
     },
     mounted() {
@@ -24,11 +25,39 @@ export default {
     methods: {
         mount() {
             this.unitId = this.$route.params.id;
-            this.webpages();
+        },
+        loadingSwalAlert(status) {
+            let timerInterval;
+            this.$swal({
+                toast: true,
+                showConfirmButton: false,
+                title: "Fetching ...",
+                html: "<b></b>",
+                timer: status === true ? false : 10000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    this.$swal.showLoading();
+                    const b = this.$swal.getHtmlContainer().querySelector("b");
+                    timerInterval = setInterval(() => {
+                        b.textContent = Math.round(
+                            this.$swal.getTimerLeft() / 1000
+                        );
+                    }, 1000);
+                },
+            }).then((result) => {
+                if (result.dismiss === this.$swal.DismissReason.timer) {
+                    this.loading = false;
+                    this.$swal({
+                        icon: "success",
+                        title: "Download Completed!",
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                }
+            });
         },
         getRestAPI(data, bag) {
             let urls = [];
-
             urls.push(
                 ...data.map(
                     (ress) =>
@@ -120,13 +149,20 @@ export default {
                                     "/unsold"
                             )
                         );
-                        caches.open("static_cache").then((cache) => {
-                            cache.addAll(urls).then(() => {});
-                        });
+                        const finish = caches
+                            .open("static_cache")
+                            .then((cache) => {
+                                cache.addAll(urls).then(() => {});
+                            });
+                        if (finish) {
+                            this.loadingSwalAlert(false);
+                        }
                     })
             );
         },
         webpages() {
+            this.loading = true;
+            this.loadingSwalAlert(true);
             let urls = [
                 "/client/branch/" + this.unitId + "/event_list",
                 "/client/branch/" + this.unitId + "/unit_ticket_inventory",

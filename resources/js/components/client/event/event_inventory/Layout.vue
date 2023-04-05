@@ -1,9 +1,7 @@
 <template>
     <div class="row">
         <div class="col-md-3">
-            <v-btn variant="flat" @click="goToOffline"
-                ><u class="text-blue">OFFLINE PENDINGS</u></v-btn
-            >
+            <h3 class="ml-3"><b>Event Ticket Inventory</b></h3>
         </div>
         <div class="col-md-3 offset-md-6"><Modal /></div>
         <div class="col-md-12">
