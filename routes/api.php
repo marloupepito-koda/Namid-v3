@@ -49,7 +49,7 @@ Route::get('/search_ticket_where/{id}', [EventInventoryController::class, 'searc
 
 
 Route::get('/get_event_bags/{unitid}/{eventid}/{type}', [EventBagsController::class, 'get_event_bags']);
-Route::get('/get_returned_bag/{unitid}/{returned}', [EventBagsController::class, 'get_returned_bag']);
+Route::get('/get_returned_bag/{unitid}/{eventid}/{returned}', [EventBagsController::class, 'get_returned_bag']);
 
 
 Route::get('/get_tickets_in_bag/{unitid}/{eventid}/{bagid}/{type}', [TicketBagsController::class, 'get_tickets_in_bag']);

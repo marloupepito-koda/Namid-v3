@@ -32,11 +32,12 @@
                 <tbody>
                     <tr v-for="i in getData" :key="i.name">
                         <td>
-                            <a
+                            {{ i.bag_name }}
+                            <!-- <a
                                 href="javascript:;"
                                 @click="showTickets(i.id, i.seller, i.bag_name)"
-                                >{{ i.bag_name }}</a
-                            >
+                                ><u>{{ i.bag_name }}</u></a
+                            > -->
                         </td>
                         <td>
                             <a
@@ -116,11 +117,12 @@ export default {
         showTickets(id, sellerName, bagName) {
             this.$router.push({
                 path:
-                    "/administrator/dashboard/" +
+                    "/client/branch/" +
                     this.unitId +
                     "/" +
                     this.eventId +
-                    "/returned_bags/inside_bag/all_tickets",
+                    "/event_bags/inside_bag/all_tickets/" +
+                    id,
             });
         },
         returnTicket(id) {
@@ -175,8 +177,15 @@ export default {
             this.unitId = this.$route.path.split("/")[3];
             this.eventId = this.$route.path.split("/")[4];
             axios
-                .get("/api/get_returned_bag/" + this.unitId + "/" + "Returned")
+                .get(
+                    "/api/get_returned_bag/" +
+                        this.unitId +
+                        "/" +
+                        this.eventId +
+                        "/Returned"
+                )
                 .then((res) => {
+                    console.log(res.data.status);
                     this.getData = res.data.status;
                     this.getData2 = res.data.status;
                     this.load = false;

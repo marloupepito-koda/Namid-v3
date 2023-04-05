@@ -24,8 +24,8 @@ class EventBagsController extends Controller
             
         }
 
-      public function get_returned_bag($unitid,$type){
-        $bags= EventBags::where([['unitid','=',$unitid],['returned','=',$type]])->get();
+      public function get_returned_bag($unitid,$eventid,$type){
+        $bags= EventBags::where([['unitid','=',$unitid],['eventid','=',$eventid],['returned','=',$type]])->get();
 
         return response()->json([
                 'status' => $bags

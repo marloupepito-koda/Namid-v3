@@ -53,7 +53,11 @@
                         <td>{{ i.bind }}</td>
                         <td>{{ i.price }}</td>
                         <td>{{ i.count }}</td>
-                        <td>{{ i.price / i.count }}</td>
+                        <td>
+                            {{
+                                i.iatp === "0" ? "None ATP" : i.price / i.count
+                            }}
+                        </td>
 
                         <td>{{ i.remaining }}</td>
                         <td>{{ i.date }}</td>

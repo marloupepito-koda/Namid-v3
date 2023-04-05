@@ -16,8 +16,8 @@
                         <span class="text-h5">ADD TICKETS</span>
                     </v-card-title>
                     Price of Ticket Roll/Sheet/Book: $ {{ price }} <br />
-                    ATP: $ {{ price / count }} <br />
-                    POP: $ {{ price }}
+                    <div v-if="iatp === true">ATP: $ {{ price / count }}</div>
+                    <div v-if="pop === true">POP: $ {{ price }}</div>
                     <hr />
 
                     <v-form ref="form" v-model="valid" lazy-validation>

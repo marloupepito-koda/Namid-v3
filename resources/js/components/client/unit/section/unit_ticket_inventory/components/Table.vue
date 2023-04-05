@@ -9,7 +9,7 @@
                         color="black"
                     ></v-progress-circular>
                 </center>
-                <v-card v-else>
+                <div v-else>
                     <v-card-title>
                         <v-text-field
                             v-model="search"
@@ -81,7 +81,7 @@
                             </tr>
                         </tbody>
                     </v-table>
-                </v-card>
+                </div>
             </div>
         </div>
     </div>

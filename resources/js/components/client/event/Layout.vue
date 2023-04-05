@@ -56,7 +56,11 @@
                     ></v-btn>
                 </template>
 
-                <v-app-bar-title>{{ name }}</v-app-bar-title>
+                <v-app-bar-title
+                    >{{ name }}
+                    <Download />
+                    <Upload />
+                </v-app-bar-title>
 
                 <template v-slot:append>
                     {{ timezone }}
@@ -79,6 +83,8 @@
 <script>
 import Breadcrumbs from "./components/Breadcrumbs.vue";
 import moment from "moment";
+import Download from "../components/Download.vue";
+import Upload from "../components/Upload.vue";
 export default {
     data() {
         return {
@@ -107,12 +113,18 @@ export default {
                 },
                 {
                     id: 4,
+                    title: "Daily Breakdown",
+                    icon: "mdi-format-page-break",
+                    active: "daily_breakdown",
+                },
+                {
+                    id: 5,
                     title: "Event Logs",
                     icon: "mdi-list-box-outline",
                     active: "logs",
                 },
                 {
-                    id: 5,
+                    id: 6,
                     title: "Event History",
                     icon: "mdi-history",
                     active: "event_history",
@@ -123,6 +135,8 @@ export default {
     },
     components: {
         Breadcrumbs,
+        Download,
+        Upload,
     },
     async mounted() {
         this.unitId = this.$route.path.split("/")[3];

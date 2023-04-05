@@ -54,10 +54,10 @@
                     </td>
                     <td>
                         <v-chip
-                            :color="i.status === 'Unsold'?'red':'green'"
+                            :color="i.status === 'Unsold' ? 'red' : 'green'"
                             text-color="white"
                         >
-                            {{i.status}}
+                            {{ i.status }}
                         </v-chip>
                     </td>
                     <td>
