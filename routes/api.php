@@ -56,7 +56,7 @@ Route::get('/get_tickets_in_bag/{unitid}/{eventid}/{bagid}/{type}', [TicketBagsC
 Route::get('/get_event_ticket_sold_history/{unitid}/{eventid}', [TicketBagsController::class, 'get_event_ticket_sold_history']);
 Route::get('/search_spot_transaction/{unitid}/{eventid}/{start}/{end}', [TicketBagsController::class, 'search_spot_transaction']);
 Route::get('/get_committee_settlement/{unitid}/{eventid}', [TicketBagsController::class, 'get_committee_settlement']);
-
+Route::get('/getEventSeller/{unitid}/{eventid}/{date}', [TicketBagsController::class, 'getEventSeller']);
 
 
 

@@ -224,23 +224,23 @@ const routes = [
         component: ClientUnits,
         children: [
             {
-                path: "/client/branch/:id/event_list",
+                path: "/client/branch/:unitid/event_list",
                 component: ClientUnitsEventList,
             },
             {
-                path: "/client/branch/:id/unit_ticket_inventory",
+                path: "/client/branch/:unitid/unit_ticket_inventory",
                 component: ClientUnitsTicketInventory,
                 children: [
                     {
-                        path: "/client/branch/:id/unit_ticket_inventory",
+                        path: "/client/branch/:unitid/unit_ticket_inventory",
                         component: ClientUnitTicketsTable,
                     },
                     {
-                        path: "/client/branch/:id/unit_ticket_inventory/events",
+                        path: "/client/branch/:unitid/unit_ticket_inventory/events",
                         component: ClientUnitEventSection,
                     },
                     {
-                        path: "/client/branch/:id/unit_ticket_inventory/bags",
+                        path: "/client/branch/:unitid/unit_ticket_inventory/bags",
                         component: ClientUnitBagSection,
                     },
                 ],
@@ -248,94 +248,94 @@ const routes = [
         ],
     },
     {
-        path: "/client/branch/:id/:id",
+        path: "/client/branch/:unitid/:eventid",
         component: ClientEventPage,
         children: [
             {
-                path: "/client/branch/:id/:id/logs",
+                path: "/client/branch/:unitid/:eventid/logs",
                 component: ClientEventLogs,
             },
             {
-                path: "/client/branch/:id/:id/event_inventory",
+                path: "/client/branch/:unitid/:eventid/event_inventory",
                 component: ClientEventInventoryPage,
             },
             {
-                path: "/client/branch/:id/:id/event_inventory/offline",
+                path: "/client/branch/:unitid/:eventid/event_inventory/offline",
                 component: ClientOfflineEventInventoryPage,
             },
             {
-                path: "/client/branch/:id/:id/show_bags",
+                path: "/client/branch/:unitid/:eventid/show_bags",
                 component: ClientShowBags,
             },
             {
-                path: "/client/branch/:id/:id/event_bags",
+                path: "/client/branch/:unitid/:eventid/event_bags",
                 component: ClientEventBags,
                 children: [
                     {
-                        path: "/client/branch/:id/:id/event_bags/all_bags",
+                        path: "/client/branch/:unitid/:eventid/event_bags/all_bags",
                         component: ClientEventAllBags,
                     },
                     {
-                        path: "/client/branch/:id/:id/event_bags/active_bags",
+                        path: "/client/branch/:unitid/:eventid/event_bags/active_bags",
                         component: ClientEventActiveBags,
                     },
                     {
-                        path: "/client/branch/:id/:id/event_bags/not_active_bags",
+                        path: "/client/branch/:unitid/:eventid/event_bags/not_active_bags",
                         component: ClientEventNotActiveBags,
                     },
                 ],
             },
             {
-                path: "/client/branch/:id/:id/event_bags/inside_bag",
+                path: "/client/branch/:unitid/:eventid/event_bags/inside_bag",
                 component: ClientTicketsInsideBag,
                 children: [
                     {
-                        path: "/client/branch/:id/:id/event_bags/inside_bag/all_tickets/:id",
+                        path: "/client/branch/:unitid/:eventid/event_bags/inside_bag/all_tickets/:bagid",
                         component: ClientTicketsInsideBagAll,
                     },
 
                     {
-                        path: "/client/branch/:id/:id/event_bags/inside_bag/sold_tickets/:id",
+                        path: "/client/branch/:unitid/:eventid/event_bags/inside_bag/sold_tickets/:bagid",
                         component: ClientTicketsInsideBagSold,
                     },
                     {
-                        path: "/client/branch/:id/:id/event_bags/inside_bag/unsold_tickets/:id",
+                        path: "/client/branch/:unitid/:eventid/event_bags/inside_bag/unsold_tickets/:bagid",
                         component: ClientTicketsInsideBagUnsold,
                     },
                 ],
             },
             {
-                path: "/client/branch/:id/:id/event_bags/inside_bag/all_tickets/offline",
+                path: "/client/branch/:unitid/:eventid/event_bags/inside_bag/all_tickets/offline",
                 component: ClientTicketsInsideBagAllOffline,
             },
             {
-                path: "/client/branch/:id/:id/event_bags/inside_bag/all_tickets/offline2",
+                path: "/client/branch/:unitid/:eventid/event_bags/inside_bag/all_tickets/offline2",
                 component: ClientTicketsInsideBagAllOffline2,
             },
             {
-                path: "/client/branch/:id/:id/event_sellers",
+                path: "/client/branch/:unitid/:eventid/event_sellers",
                 component: ClientEventSellers,
             },
             {
-                path: "/client/branch/:id/:id/returned_bags",
+                path: "/client/branch/:unitid/:eventid/returned_bags",
                 component: ClientReturnedBagsPage,
                 children: [
                     {
-                        path: "/client/branch/:id/:id/returned_bags",
+                        path: "/client/branch/:unitid/:eventid/returned_bags",
                         component: ClientReturnedBagsTable,
                     },
                     {
-                        path: "/client/branch/:id/:id/returned_bags/inside_bag/all_tickets",
+                        path: "/client/branch/:unitid/:eventid/returned_bags/inside_bag/all_tickets",
                         component: ClientReturnedAllTickets,
                     },
                 ],
             },
             {
-                path: "/client/branch/:id/:id/daily_breakdown",
+                path: "/client/branch/:unitid/:eventid/daily_breakdown",
                 component: ClientDailySellerBreakdown,
             },
             {
-                path: "/client/branch/:id/:id/event_history",
+                path: "/client/branch/:unitid/:eventid/event_history",
                 component: ClientEventHistory,
             },
         ],

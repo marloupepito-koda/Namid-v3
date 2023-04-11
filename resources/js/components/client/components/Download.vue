@@ -1,5 +1,5 @@
 <template>
-    <v-btn icon @click="webpages()" :loading="loading">
+    <v-btn icon @click="downloadData()" :loading="loading">
         <v-tooltip
             text="Click to Download"
             activator="parent"
@@ -17,6 +17,8 @@ export default {
             unitId: "",
             eventId: "",
             loading: false,
+            urls: [],
+            isDomContentLoaded: false,
         };
     },
     mounted() {
@@ -24,7 +26,7 @@ export default {
     },
     methods: {
         mount() {
-            this.unitId = this.$route.params.id;
+            this.unitId = this.$route.params.unitid;
         },
         loadingSwalAlert(status) {
             let timerInterval;
@@ -56,207 +58,190 @@ export default {
                 }
             });
         },
-        getRestAPI(data, bag) {
-            let urls = [];
-            urls.push(
-                ...data.map(
-                    (ress) =>
-                        "/api/get_ticket_inventory/" +
-                        ress.unitid +
-                        "/" +
-                        ress.id
-                ),
-                ...data.map(
-                    (ress) =>
-                        "/api/get_event_bags/" +
-                        ress.unitid +
-                        "/" +
-                        ress.id +
-                        "/all"
-                ),
-                ...data.map(
-                    (ress) =>
-                        "/api/get_event_bags/" +
-                        ress.unitid +
-                        "/" +
-                        ress.id +
-                        "/active"
-                ),
-                ...data.map(
-                    (ress) =>
-                        "/api/get_event_bags/" +
-                        ress.unitid +
-                        "/" +
-                        ress.id +
-                        "/notactive"
-                ),
-                ...data.map(
-                    (ress) =>
-                        "/api/get_returned_bag/" +
-                        ress.unitid +
-                        "/" +
-                        ress.id +
-                        "/Returned"
-                ),
-                ...data.map(
-                    (ress) =>
-                        "/api/get_event_ticket_sold_history/" +
-                        ress.unitid +
-                        "/" +
-                        ress.id
-                )
-            );
+        downloadData() {
+            this.getEvents();
+        },
+        getEvents() {
+            this.loadingSwalAlert(true);
+            axios
+                .get("/api/get_unit_ticket_inventory/" + this.unitId)
+                .then((res) => {
+                    res.data.status.map((aaa) =>
+                        this.getEachTicketInUnit(aaa.id)
+                    );
+                });
 
-            bag.map((aaa) =>
-                urls.push(
-                    "/api/get_tickets_in_bag/" +
-                        aaa.unitid +
-                        "/" +
-                        aaa.eventid +
-                        "/" +
-                        String(aaa.id) +
-                        "/all",
-                    "/api/get_tickets_in_bag/" +
-                        aaa.unitid +
-                        "/" +
-                        aaa.eventid +
-                        "/" +
-                        String(aaa.id) +
-                        "/sold",
-                    "/api/get_tickets_in_bag/" +
-                        aaa.unitid +
-                        "/" +
-                        aaa.eventid +
-                        "/" +
-                        String(aaa.id) +
-                        "/unsold"
-                )
-            );
-            caches.open("static_cache").then((cache) => {
-                cache.addAll(urls).then(() => {});
+            axios.get("/api/get_events_in_unit/" + this.unitId).then((res) => {
+                this.unitPages();
+                res.data.status.map((aaa) =>
+                    this.getEventTickets(aaa.unitid, aaa.id)
+                );
+                res.data.status.map((aaa) =>
+                    this.getEventAPI(aaa.unitid, aaa.id)
+                );
+                res.data.status.map((aaa) =>
+                    this.eventPages(aaa.unitid, aaa.id)
+                );
+                res.data.status.map((aaa) =>
+                    this.getEventBags(aaa.unitid, aaa.id)
+                );
+                caches.open("static_cache").then((cache) => {
+                    cache.addAll(this.urls).then(() => {});
+                });
             });
             this.loadingSwalAlert(false);
         },
-        webpages() {
-            this.loading = true;
-            this.loadingSwalAlert(true);
-            let urls = [
+        getEachTicketInUnit(ticketid) {
+            const urls = ["/api/get_each_ticket_in_unit/" + ticketid];
+            caches.open("static_cache").then((cache) => {
+                cache.addAll(urls).then(() => {});
+            });
+        },
+        getEventTickets(unitid, eventid) {
+            axios
+                .get("/api/get_ticket_inventory/" + unitid + "/" + eventid)
+                .then((res) => {
+                    res.data.status.map((aaa) =>
+                        this.getEveryTicketInEvent(
+                            aaa.unitid,
+                            aaa.eventid,
+                            aaa.id
+                        )
+                    );
+                });
+        },
+        getEveryTicketInEvent(unitid, eventid, ticketid) {
+            this.urls.push(
+                "/api/get_each_ticket_in_event_inventory/" + ticketid
+            );
+            caches.open("static_cache").then((cache) => {
+                cache.addAll(this.urls).then(() => {});
+            });
+        },
+        getEventAPI(unitid, eventid) {
+            this.urls.push(
+                "/api/get_event_bags/" + unitid + "/" + eventid + "/all",
+                "/api/get_ticket_inventory/" + unitid + "/" + eventid,
+                "/api/get_unit_inventory/" + unitid + "/" + eventid,
+                "/api/get_returned_bag/" + unitid + "/" + eventid + "/Returned",
+                "/api/getEventSeller/" +
+                    unitid +
+                    "/" +
+                    eventid +
+                    "/" +
+                    moment().format("MM-DD-YYYY")
+            );
+            caches.open("static_cache").then((cache) => {
+                cache.addAll(this.urls).then(() => {});
+            });
+        },
+        getEventBags(unitid, eventid) {
+            axios
+                .get("/api/get_event_bags/" + unitid + "/" + eventid + "/all")
+                .then((res) => {
+                    res.data.status.map((aaa) =>
+                        this.getEventBagPages(aaa.unitid, aaa.eventid, aaa.id)
+                    );
+                    res.data.status.map((aaa) =>
+                        this.getTicketInBag(aaa.unitid, aaa.eventid, aaa.id)
+                    );
+                });
+        },
+        getTicketInBag(unitid, eventid, bagid) {
+            this.urls.push(
+                "/api/get_tickets_in_bag/" +
+                    unitid +
+                    "/" +
+                    eventid +
+                    "/" +
+                    String(bagid) +
+                    "/all",
+                "/api/get_tickets_in_bag/" +
+                    unitid +
+                    "/" +
+                    eventid +
+                    "/" +
+                    String(bagid) +
+                    "/sold",
+                "/api/get_tickets_in_bag/" +
+                    unitid +
+                    "/" +
+                    eventid +
+                    "/" +
+                    String(bagid) +
+                    "/unsold"
+            );
+            caches.open("static_cache").then((cache) => {
+                cache.addAll(this.urls).then(() => {});
+            });
+        },
+        getEventBagPages(unitid, eventid, bagid) {
+            this.urls.push(
+                "/client/branch/" +
+                    unitid +
+                    "/" +
+                    eventid +
+                    "/event_bags/inside_bag/all_tickets/" +
+                    bagid,
+                "/client/branch/" +
+                    unitid +
+                    "/" +
+                    eventid +
+                    "/event_bags/inside_bag/sold_tickets/" +
+                    bagid,
+                "/client/branch/" +
+                    unitid +
+                    "/" +
+                    eventid +
+                    "/event_bags/inside_bag/unsold_tickets/" +
+                    bagid
+            );
+            caches.open("static_cache").then((cache) => {
+                cache.addAll(this.urls).then(() => {});
+            });
+        },
+        unitPages() {
+            const urls = [
                 "/client/branch/" + this.unitId + "/event_list",
                 "/client/branch/" + this.unitId + "/unit_ticket_inventory",
-                "/client/branch/" + this.unitId + "/daily_breakdown",
+                "/api/get_unit_ticket_inventory/" + this.unitId + "",
                 "/api/get_events_in_unit/" + this.unitId,
-                "/api/get_unit_ticket_inventory/" + this.unitId,
             ];
 
-            axios.get("/api/get_events_in_unit/" + this.unitId).then((res) => {
-                urls.push(
-                    ...res.data.status.map(
-                        (ress) =>
-                            "/client/branch/" +
-                            ress.unitid +
-                            "/" +
-                            ress.id +
-                            "/event_inventory"
-                    ),
-                    ...res.data.status.map(
-                        (ress) =>
-                            "/client/branch/" +
-                            ress.unitid +
-                            "/" +
-                            ress.id +
-                            "/event_bags/all_bags"
-                    ),
-                    ...res.data.status.map(
-                        (ress) =>
-                            "/client/branch/" +
-                            ress.unitid +
-                            "/" +
-                            ress.id +
-                            "/event_bags/active_bags"
-                    ),
-                    ...res.data.status.map(
-                        (ress) =>
-                            "/client/branch/" +
-                            ress.unitid +
-                            "/" +
-                            ress.id +
-                            "/event_bags/not_active_bags"
-                    ),
-                    ...res.data.status.map(
-                        (ress) =>
-                            "/client/branch/" +
-                            ress.unitid +
-                            "/" +
-                            ress.id +
-                            "/returned_bags"
-                    ),
-                    ...res.data.status.map(
-                        (ress) =>
-                            "/client/branch/" +
-                            ress.unitid +
-                            "/" +
-                            ress.id +
-                            "/logs"
-                    ),
-                    ...res.data.status.map(
-                        (ress) =>
-                            "/client/branch/" +
-                            ress.unitid +
-                            "/" +
-                            ress.id +
-                            "/event_history"
-                    )
-                );
-                res.data.status.map((aa) =>
-                    axios
-                        .get(
-                            "/api/get_event_bags/" +
-                                String(aa.unitid) +
-                                "/" +
-                                String(aa.id) +
-                                "/all"
-                        )
-                        .then((aaa) => {
-                            urls.push(
-                                ...aaa.data.status.map(
-                                    (b) =>
-                                        "/client/branch/" +
-                                        b.unitid +
-                                        "/" +
-                                        b.eventid +
-                                        "/event_bags/inside_bag/all_tickets/" +
-                                        String(b.id)
-                                )
-                            );
-                        })
-                );
-
-                res.data.status.map((aaa) =>
-                    axios
-                        .get(
-                            "/api/get_ticket_inventory/" +
-                                aaa.unitid +
-                                "/" +
-                                aaa.eventid
-                        )
-                        .then((response) => {
-                            urls.push(
-                                ...response.data.status.map(
-                                    (bbb) =>
-                                        "/api/get_each_ticket_in_event_inventory/" +
-                                        String(bbb.id)
-                                )
-                            );
-
-                            this.getRestAPI(
-                                res.data.status,
-                                response.data.status
-                            );
-                        })
-                );
-                caches.open("static_cache").then((cache) => {
-                    cache.addAll(urls).then(() => {});
-                });
+            caches.open("static_cache").then((cache) => {
+                cache.addAll(urls).then(() => {});
+            });
+        },
+        eventPages(unitid, eventid) {
+            this.urls.push(
+                "/client/branch/" + unitid + "/" + eventid + "/event_inventory",
+                "/client/branch/" +
+                    unitid +
+                    "/" +
+                    eventid +
+                    "/unit_ticket_inventory",
+                "/client/branch/" +
+                    unitid +
+                    "/" +
+                    eventid +
+                    "/event_bags/all_bags",
+                "/client/branch/" +
+                    unitid +
+                    "/" +
+                    eventid +
+                    "/event_bags/active_bags",
+                "/client/branch/" +
+                    unitid +
+                    "/" +
+                    eventid +
+                    "/event_bags/not_active_bags",
+                "/client/branch/" + unitid + "/" + eventid + "/returned_bags",
+                "/client/branch/" + unitid + "/" + eventid + "/daily_breakdown",
+                "/client/branch/" + unitid + "/" + eventid + "/logs",
+                "/client/branch/" + unitid + "/" + eventid + "/event_history"
+            );
+            caches.open("static_cache").then((cache) => {
+                cache.addAll(this.urls).then(() => {});
             });
         },
     },

@@ -11,6 +11,24 @@ use App\Models\Units;
 use Illuminate\Support\Facades\DB;
 class TicketBagsController extends Controller
 {
+      public function edit_ticket_sold(Request $request){
+           $seller = TicketBags::where('id',$request->id)->update([
+                'start' => $request->start,
+                'end' => $request->end,
+                'quantity' => $request->end -$request->start +1,
+           ]);
+             return response()->json([
+                'status' =>  'success',
+                ]);
+      }
+    
+     public function getEventSeller($unitid,$eventid,$date){
+           
+             $seller = TicketBags::where([['date','=' , $date],['eventid','=' , $eventid],['unitid','=' , $unitid],['status','=','Sold']])->get();
+             return response()->json([
+                'status' =>  $seller,
+                ]);
+     }
 
      public function get_committee_settlement($unitid,$eventid){
            
