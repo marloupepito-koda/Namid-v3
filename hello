@@ -1,0 +1,92 @@
+const form =
+                        JSON.parse(
+                            localStorage.getItem(
+                                "create_ticket_sold" +
+                                    this.unitId +
+                                    this.eventId +
+                                    this.bagId
+                            )
+                        ) === null
+                            ? []
+                            : JSON.parse(
+                                  localStorage.getItem(
+                                      "create_ticket_sold" +
+                                          this.unitId +
+                                          this.eventId +
+                                          this.bagId
+                                  )
+                              );
+
+                    form.push(data);
+                    localStorage.setItem(
+                        "create_ticket_sold" +
+                            this.unitId +
+                            this.eventId +
+                            this.bagId,
+                        JSON.stringify(form)
+                    );
+                    this.reset();
+                    this.$swal({
+                        icon: "success",
+                        title: "Ticket Added Sold",
+                        showConfirmButton: false,
+                        timer: 1000,
+                    });
+
+
+                    getEvents() {
+            axios.get("/api/get_events_in_unit/" + this.unitId).then((res) => {
+                res.data.status.map((aaa) =>
+                    this.getEventBags(aaa.unitid, aaa.id)
+                );
+            });
+        },
+        getEventBags(unitid, eventid) {
+            axios
+                .get("/api/get_event_bags/" + unitid + "/" + eventid + "/all")
+                .then((res) => {
+                    res.data.status.map((aaa) =>
+                        this.getTicketInBag(aaa.unitid, aaa.eventid, aaa.id)
+                    );
+                });
+        },
+        getTicketInBag(unitid, eventid, bagid) {
+            const ticketInbag = JSON.parse(
+                localStorage.getItem(
+                    "get_tickets_in_bag" + unitid + eventid + bagid
+                )
+            );
+            if (ticketInbag !== null) {
+                alert("hello");
+            }
+        },
+
+        ticketsInBag() {
+            // axios
+            //     .get(
+            //         "/api/get_tickets_in_bag/" +
+            //             this.unitId +
+            //             "/" +
+            //             this.eventId +
+            //             "/" +
+            //             "2" +
+            //             "/all"
+            //     )
+            //     .then((result) => {
+            //         console.log(result.data.status.map((res) => res.id));
+            //     });
+        },
+        getData() {
+            const cache = setupCache({
+                maxAge: 15 * 60 * 1000,
+            });
+            const api = axios.create({
+                adapter: cache.adapter,
+            });
+
+            api.get("/api/get_unit_ticket_inventory/" + this.unitId).then(
+                (response) => {
+                    console.log("dddd", response.data);
+                }
+            );
+        },

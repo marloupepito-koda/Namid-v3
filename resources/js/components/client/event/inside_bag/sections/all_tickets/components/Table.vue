@@ -148,20 +148,35 @@ export default {
             this.unitId = this.$route.path.split("/")[3];
             this.eventId = this.$route.path.split("/")[4];
             this.bagId = this.$route.path.split("/")[8];
-            axios
-                .get(
-                    "/api/get_tickets_in_bag/" +
-                        this.unitId +
-                        "/" +
-                        this.eventId +
-                        "/" +
-                        this.bagId +
-                        "/all"
-                )
-                .then((res) => {
-                    this.getData2 = res.data.status;
-                    this.getData = res.data.status;
-                });
+
+            if (localStorage.getItem("internet") === "offline") {
+                const ticketInbag = JSON.parse(
+                    localStorage.getItem(
+                        "get_tickets_in_bag" +
+                            this.unitId +
+                            this.eventId +
+                            this.bagId
+                    )
+                );
+                this.getData2 = ticketInbag;
+                this.getData = ticketInbag;
+                console.log(ticketInbag);
+            } else {
+                axios
+                    .get(
+                        "/api/get_tickets_in_bag/" +
+                            this.unitId +
+                            "/" +
+                            this.eventId +
+                            "/" +
+                            this.bagId +
+                            "/all"
+                    )
+                    .then((res) => {
+                        this.getData2 = res.data.status;
+                        this.getData = res.data.status;
+                    });
+            }
         },
     },
 };

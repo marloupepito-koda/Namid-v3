@@ -44,6 +44,7 @@ Route::get('/get_each_ticket_in_unit/{ticketid}', [UnitInventoryController::clas
 
 
 Route::get('/get_ticket_inventory/{unitid}/{eventid}', [EventInventoryController::class, 'get_ticket_inventory']);
+Route::get('/get_ticket_inventory2/{unitid}/{eventid}', [EventInventoryController::class, 'get_ticket_inventory2']);
 Route::get('/get_each_ticket_in_event_inventory/{id}', [EventInventoryController::class, 'get_each_ticket_in_event_inventory']);
 Route::get('/search_ticket_where/{id}', [EventInventoryController::class, 'search_ticket_where']);
 

@@ -305,11 +305,11 @@ const routes = [
                 ],
             },
             {
-                path: "/client/branch/:unitid/:eventid/event_bags/inside_bag/all_tickets/offline",
+                path: "/client/branch/:unitid/:eventid/event_bags/inside_bag/all_tickets/offline/:bagid",
                 component: ClientTicketsInsideBagAllOffline,
             },
             {
-                path: "/client/branch/:unitid/:eventid/event_bags/inside_bag/all_tickets/offline2",
+                path: "/client/branch/:unitid/:eventid/event_bags/inside_bag/all_tickets/offline2/:bagid",
                 component: ClientTicketsInsideBagAllOffline2,
             },
             {

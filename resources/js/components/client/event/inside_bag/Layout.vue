@@ -12,9 +12,9 @@
             <v-btn variant="flat" @click="goToOffline"
                 ><u class="text-blue">PENDING TICKETS</u></v-btn
             >
-            <v-btn variant="flat" @click="goToOffline2"
+            <!-- <v-btn variant="flat" @click="goToOffline2"
                 ><u class="text-blue">PENDING SOLD TICKETS</u></v-btn
-            >
+            > -->
         </div>
         <div class="col-md-3 offset-md-3"><Modal /></div>
         <div class="col-md-12 mt-5">
@@ -36,6 +36,7 @@ export default {
         this.tab = this.$route.path.split("/")[7];
         this.unitId = this.$route.path.split("/")[3];
         this.eventId = this.$route.path.split("/")[4];
+        this.bagId = this.$route.path.split("/")[8];
     },
     methods: {
         goToOffline() {
@@ -45,7 +46,8 @@ export default {
                     this.unitId +
                     "/" +
                     this.eventId +
-                    "/event_bags/inside_bag/all_tickets/offline",
+                    "/event_bags/inside_bag/all_tickets/offline/" +
+                    this.bagId,
             });
         },
         goToBags() {
@@ -55,19 +57,21 @@ export default {
                     this.unitId +
                     "/" +
                     this.eventId +
-                    "/event_bags/all_bags",
+                    "/event_bags/all_bags/" +
+                    this.bagId,
             });
         },
-        goToOffline2() {
-            this.$router.push({
-                path:
-                    "/client/branch/" +
-                    this.unitId +
-                    "/" +
-                    this.eventId +
-                    "/event_bags/inside_bag/all_tickets/offline2",
-            });
-        },
+        // goToOffline2() {
+        //     this.$router.push({
+        //         path:
+        //             "/client/branch/" +
+        //             this.unitId +
+        //             "/" +
+        //             this.eventId +
+        //             "/event_bags/inside_bag/all_tickets/offline2/" +
+        //             this.bagId,
+        //     });
+        // },
     },
 };
 </script>

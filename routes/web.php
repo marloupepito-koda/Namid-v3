@@ -66,4 +66,5 @@ Route::post('/create_ticket_sold', [TicketBagsController::class, 'create_ticket_
 Route::put('/edit_ticket_price_in_bag', [TicketBagsController::class, 'edit_ticket_price_in_bag']);
 Route::put('/transfer_ticket_in_another_bag', [TicketBagsController::class, 'transfer_ticket_in_another_bag']);
 Route::put('/edit_ticket_sold', [TicketBagsController::class, 'edit_ticket_sold']);
+Route::post('/uploading_ticket_in_bag', [TicketBagsController::class, 'uploading_ticket_in_bag']);
 

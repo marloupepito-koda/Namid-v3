@@ -55,6 +55,9 @@ export default {
             if (type === "online") {
                 //localStorage.setItem("names", JSON.stringify(names));
             }
+            this.$router.push({
+                hash: "#" + Math.floor(Math.random() * 999999),
+            });
         },
     },
     watch: {

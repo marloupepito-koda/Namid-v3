@@ -11,6 +11,7 @@
     </v-btn>
 </template>
 <script>
+import moment from "moment";
 export default {
     data() {
         return {
@@ -129,7 +130,8 @@ export default {
                     "/" +
                     eventid +
                     "/" +
-                    moment().format("MM-DD-YYYY")
+                    moment().format("MM-DD-YYYY"),
+                "/api/get_event_ticket_sold_history/" + unitid + "/" + eventid
             );
             caches.open("static_cache").then((cache) => {
                 cache.addAll(this.urls).then(() => {});
@@ -148,6 +150,22 @@ export default {
                 });
         },
         getTicketInBag(unitid, eventid, bagid) {
+            axios
+                .get(
+                    "/api/get_tickets_in_bag/" +
+                        unitid +
+                        "/" +
+                        eventid +
+                        "/" +
+                        bagid +
+                        "/all"
+                )
+                .then((result) => {
+                    localStorage.setItem(
+                        "get_tickets_in_bag" + unitid + eventid + bagid,
+                        JSON.stringify(result.data.status)
+                    );
+                });
             this.urls.push(
                 "/api/get_tickets_in_bag/" +
                     unitid +

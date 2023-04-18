@@ -34,8 +34,14 @@ class EventInventoryController extends Controller
     public function get_ticket_inventory($unitid,$eventid){
     $event = EventInventory::where([['unitid','=',$unitid],['eventid','=',$eventid]])->get();
             return response()->json([
-                        'status' => $event
-                        ]);
+            'status' => $event
+            ]);
+        }
+         public function get_ticket_inventory2($unitid,$eventid){
+    $event = EventInventory::where([['status','=',null],['unitid','=',$unitid],['eventid','=',$eventid]])->get();
+            return response()->json([
+            'status' => $event
+            ]);
         }
    public function add_ticket_in_event(Request $request){
         $ui = UnitInventory::where('id',$request->id)->first();

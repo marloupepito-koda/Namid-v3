@@ -11,12 +11,36 @@ use App\Models\Units;
 use Illuminate\Support\Facades\DB;
 class TicketBagsController extends Controller
 {
-      public function edit_ticket_sold(Request $request){
-           $seller = TicketBags::where('id',$request->id)->update([
-                'start' => $request->start,
-                'end' => $request->end,
-                'quantity' => $request->end -$request->start +1,
-           ]);
+   
+      public function uploading_ticket_in_bag(Request $request){
+          for ($i=0; $i < count($request->data); $i++) { 
+              $ticket = TicketBags::where('id',$request->data[$i]['id'])->first();
+              if($ticket !== null){
+                    TicketBags::where('id',$ticket->id)->update([
+                         'start' => $request->data[$i]['start'],
+                         'end' => $request->data[$i]['end'],
+                         'quantity' => $request->data[$i]['end'] - $request->data[$i]['start'] + 1,
+                         'status' =>$request->data[$i]['status'],
+                    ]);
+              }else{
+                    TicketBags::create([
+                         'unitid' => $request->data[$i]['unitid'],
+                         'eventid' => $request->data[$i]['eventid'],
+                         'ticket_type' => $request->data[$i]['ticket_type'],
+                         'bagid' => $request->data[$i]['bagid'],
+                         'seller' => $request->data[$i]['seller'],
+                         'ticketid' => $request->data[$i]['ticketid'],
+                         'start' =>$request->data[$i]['start'],
+                         'end' => $request->data[$i]['end'],
+                         'price' => $request->data[$i]['price'],
+                         'bind' => $request->data[$i]['bind'],
+                         'count' =>$request->data[$i]['count'],
+                         'date' => $request->data[$i]['date'],
+                         'quantity' =>$request->data[$i]['quantity'],
+                         'status' =>$request->data[$i]['status'],
+                    ]);
+              }
+          }
              return response()->json([
                 'status' =>  'success',
                 ]);
@@ -202,7 +226,7 @@ class TicketBagsController extends Controller
                          'bind' => $ticket->bind,
                          'count' => $ticket->count,
                          'date' => $ticket->date,
-                         'quantity' =>$ticket->end - $request->end +1,
+                         'quantity' =>$ticket->end - $request->end,
                          'status' =>'Unsold',
                     ]);
 

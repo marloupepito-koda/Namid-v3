@@ -11,36 +11,31 @@
                 <thead>
                     <tr>
                         <th class="text-left">Ticket Type</th>
-                        <th class="text-left">Bag Name</th>
                         <th class="text-left">Price</th>
                         <th class="text-left">ATP</th>
                         <th class="text-left">Quantity</th>
                         <th class="text-left">Amount</th>
                         <th class="text-left">Starting #</th>
                         <th class="text-left">Ending #</th>
-                        <th class="text-center">Delete</th>
-                        <th class="text-center">Add</th>
+                        <th class="text-left">Delete</th>
+                        <th class="text-left">Add</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(i, index) in pendings" :key="i.name">
                         <td>
-                            {{ i.ticket_name }}
+                            {{ i.data.ticket_type }}
                         </td>
-                        <td>{{ i.bagname }}</td>
-                        <td>{{ i.ticket_price }}</td>
+                        <td>{{ i.data.price }}</td>
 
-                        <td>{{ i.atp }}</td>
-                        <td>{{ i.ticket_end - i.ticket_start + 1 }}</td>
+                        <td>{{ i.data.price / i.data.count }}</td>
+                        <td>{{ i.end - i.start + 1 }}</td>
                         <td>
-                            {{
-                                (i.ticket_end - i.ticket_start + 1) *
-                                i.ticket_price
-                            }}
+                            {{ (i.end - i.start + 1) * i.data.price }}
                         </td>
-                        <td>{{ i.ticket_start }}</td>
+                        <td>{{ i.start }}</td>
 
-                        <td>{{ i.ticket_end }}</td>
+                        <td>{{ i.end }}</td>
                         <td>
                             <a href="#" @click="deletePendings(index)"
                                 >delete</a
@@ -75,62 +70,36 @@ export default {
         internet: "",
         unitId: "",
         eventId: "",
-        eventName: "",
-        unitName: "",
     }),
     mounted() {
-        this.unitName = this.$route.path.split("/")[4].replace(/_/g, " ");
         this.unitId = this.$route.path.split("/")[3];
-        this.eventId = this.$route.query.event_id[0];
-        this.eventName = this.$route.path.split("/")[5].replace(/_/g, " ");
-        this.bagId = this.$route.query.event_id[1];
-        this.sellerName = this.$route.query.event_id[2];
-        this.bagName = this.$route.query.event_id[3];
+        this.eventId = this.$route.path.split("/")[4];
+        this.bagId = this.$route.path.split("/")[9];
         this.pendings = JSON.parse(
             localStorage.getItem(
-                "add_ticket_sold" + this.unitId + this.eventId + this.bagId
+                "create_ticket_sold" + this.unitId + this.eventId + this.bagId
             )
         );
         console.log(this.pendings);
         this.internet = localStorage.getItem("internet");
-        // console.log("wwaa", this.pendings);
-        // localStorage.removeItem("add_ticket_bag" + this.unitId + this.eventId);
     },
     methods: {
         goBack() {
             this.$router.push({
                 path:
-                    "/administrator/dashboard/" +
+                    "/client/branch/" +
                     this.unitId +
                     "/" +
-                    this.unitName.replace(/ /g, "_") +
-                    "/" +
-                    this.eventName.replace(/ /g, "_") +
-                    "/event_bags/inside_bag/all_tickets",
-                query: {
-                    event_id: [
-                        this.eventId,
-                        this.bagId,
-                        this.sellerName,
-                        this.bagName,
-                    ],
-                },
+                    this.eventId +
+                    "/event_bags/inside_bag/all_tickets/" +
+                    this.bagId,
             });
         },
-        logs(event) {
-            axios
-                .post("/add_logs", {
-                    unit_id: this.unitId,
-                    event_id: this.eventId,
-                    ticket_id: "",
-                    descriptions: event,
-                })
-                .then((res) => {});
-        },
+
         deletePendings(item) {
             this.pendings.splice(item, 1);
             localStorage.setItem(
-                "add_ticket_sold" + this.unitId + this.eventId + this.bagId,
+                "create_ticket_sold" + this.unitId + this.eventId + this.bagId,
                 JSON.stringify(this.pendings)
             );
         },
@@ -140,23 +109,9 @@ export default {
                 this.internet = "offline";
                 this.snackbar = true;
             } else {
-                axios.post("/add_ticket_sold", item).then((res) => {
+                axios.post("/create_ticket_sold", item).then((res) => {
                     const name = localStorage.getItem("name");
-                    this.logs(
-                        name +
-                            " Mark Sold " +
-                            item.ticket_name +
-                            " from starting # " +
-                            item.ticket_start +
-                            " to " +
-                            item.ticket_end +
-                            " and the total of " +
-                            (item.ticket_end - item.ticket_start + 1) +
-                            " Tickets " +
-                            "with the amount of " +
-                            item.ticket_price +
-                            " while offline mode"
-                    );
+
                     this.$swal({
                         icon: "success",
                         title: "Ticket Added",
@@ -165,7 +120,7 @@ export default {
                     });
                     this.pendings.splice(index, 1);
                     localStorage.setItem(
-                        "add_ticket_sold" +
+                        "create_ticket_sold" +
                             this.unitId +
                             this.eventId +
                             this.bagId,

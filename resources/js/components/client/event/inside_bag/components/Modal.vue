@@ -138,7 +138,7 @@ export default {
                     : this.$route.query.seller;
             axios
                 .get(
-                    "/api/get_ticket_inventory/" +
+                    "/api/get_ticket_inventory2/" +
                         this.unitId +
                         "/" +
                         this.eventId
